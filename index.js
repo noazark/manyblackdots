@@ -145,8 +145,8 @@ window.onload = function () {
     moveHero();
     moveObstacles();
     moveStepables();
-    detectObstacleCollision();
     detectStepableCollision();
+    detectObstacleCollision();
     detectFloorCollision();
 
     if (data.state.isAlive) {
