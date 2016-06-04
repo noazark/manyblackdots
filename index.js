@@ -204,7 +204,7 @@ window.onload = function () {
         h: 10,
         w: 10,
         x: 30,
-        y: 6,
+        y: 1,
         dx: 0,
         dy: 0,
         isJumping: false,
