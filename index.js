@@ -39,7 +39,7 @@ window.onload = function () {
   }
 
   function moveHero() {
-    if (data.state.up && !data.hero.hasClimaxed) {
+    if (data.state.up && !data.hero.hasClimaxed && data.hero.dy >= 0) {
       data.hero.isJumping = true;
       data.hero.dy = data.config.jumpAccel(data.hero.dy);
     } else {
@@ -104,7 +104,8 @@ window.onload = function () {
     data.stepables.find(function (o) {
       var hasCollided = _detectCollision(data.hero, o);
 
-      if (hasCollided) {
+      // can jump through platforms, mario style
+      if (hasCollided && data.hero.dy < 0) {
         data.hero.y = o.y + o.h;
         data.hero.dy = 0;
         data.hero.hasClimaxed = false;
