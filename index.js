@@ -24,6 +24,7 @@ function drawHero() {
 }
 
 function drawScore() {
+  ctx.textAlign = 'left'
   ctx.font = "18px monospace";
   ctx.fillText(`${Math.floor(data.score)}`, 5, 23)
 }
@@ -56,7 +57,7 @@ function moveObstacles() {
     let type = Math.floor(Math.random() * obstacleTypes.length)
     data.obstacles.push(Object.assign(obstacleTypes[type], {
       x: data.canvas.w * 1.5,
-      y: 6,
+      y: data.floor.y + data.floor.h,
     }))
   }
 
@@ -106,7 +107,7 @@ function detectObstacleCollision() {
     let hasCollided = _detectCollision(data.hero, o)
 
     if (hasCollided) {
-      data.state.alive = false
+      data.state.isAlive = false
       stop()
     }
   })
@@ -124,8 +125,10 @@ function _detectCollision(a, b) {
 }
 
 function draw() {
-  if (data.state.playing) {
-    window.requestAnimationFrame(() => draw())
+  if (data.state.isPlaying) {
+    setTimeout(() => {
+      window.requestAnimationFrame(() => draw())
+    }, 15)
   }
 
 	data.config.gameSpeed *= data.config.deltaGameSpeed
@@ -136,7 +139,7 @@ function draw() {
   detectStepableCollision()
   detectFloorCollision()
 
-  if (data.state.alive) {
+  if (data.state.isAlive) {
     data.score += 0.4
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     drawFloor()
@@ -150,70 +153,77 @@ function draw() {
 }
 
 function start() {
-  if (data.state.playing === false) {
-    data.state.playing = true
+  if (data.state.isPlaying === false) {
+    data.state.isPlaying = true
     draw()
   }
 }
 
 function stop() {
-  data.state.playing = false
+  data.state.isPlaying = false
 }
 
-const data = {
-  score: 0,
-  config: {
-    jumpAccelMax: 12,
-    jumpAccel: (d) => d + 1.5,
-    jumpDecel: (d) => d - 1.8,
-  	gameSpeed: 5,
-  	deltaGameSpeed: 1.0005,
-  },
-  canvas: {
-    h: 300,
-    w: 300
-  },
-  state: {
-    alive: true,
-    playing: false,
-		up: false,
-    down: false,
-    left: false,
-    right: false,
-  },
-  hero: {
-  	h: 10,
-    w: 10,
-    x: 30,
-    y: 6,
-    dx: 0,
-    dy: 0,
-    isJumping: false,
-    hasClimaxed: false,
-  },
-  floor: {
-    h: 1,
-    w: 300,
-    x: 0,
-    y: 5,
-  },
-  obstacles: [],
-  stepables: []
+function initalizeGame() {
+  return {
+    score: 0,
+    config: {
+      jumpAccelMax: 12,
+      jumpAccel: (d) => d + 1.5,
+      jumpDecel: (d) => d - 1.8,
+    	gameSpeed: 5,
+    	deltaGameSpeed: 1.0005,
+    },
+    canvas: {
+      h: 300,
+      w: 300
+    },
+    state: {
+      isAlive: true,
+      isPlaying: false,
+  		up: false,
+      down: false,
+      left: false,
+      right: false,
+    },
+    hero: {
+    	h: 10,
+      w: 10,
+      x: 30,
+      y: 6,
+      dx: 0,
+      dy: 0,
+      isJumping: false,
+      hasClimaxed: false,
+    },
+    floor: {
+      type: 'platform',
+      h: 1,
+      w: 300,
+      x: 0,
+      y: 0,
+    },
+    obstacles: [],
+    stepables: []
+  }
 }
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const obstacleTypes = [{
+  type: 'obstacle',
   x: 0,
   y: 0,
   w: 20,
   h: 70,
 },{
+  type: 'obstacle',
   x: 0,
   y: 0,
   w: 40,
   h: 40,
 },{
+  type: 'obstacle',
   x: 0,
   y: 0,
   w: 60,
@@ -221,21 +231,26 @@ const obstacleTypes = [{
 }]
 
 const stepableTypes = [{
+  type: 'platform',
   x: 0,
   y: 0,
   w: 60,
   h: 1,
 },{
+  type: 'platform',
   x: 0,
   y: 0,
   w: 80,
   h: 1,
 },{
+  type: 'platform',
   x: 0,
   y: 0,
   w: 100,
   h: 1,
 }]
+
+let data = initalizeGame()
 
 // retina bloating
 canvas.width = data.canvas.w * 2;
@@ -245,26 +260,24 @@ canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2,2)
 ctx.fillStyle = '#333333'
 
-const KEYMAP = {
-  up: 87,
-  down: 83,
-  left: 65,
-  right: 68,
-}
-
-document.addEventListener('keydown', function (e) {
-  if (e.keyCode === KEYMAP.up && !data.hero.isJumping) {
+function handlePress(e) {
+  if (!data.hero.isJumping) {
   	data.state.up = true
   }
-})
 
-document.addEventListener('keyup', function (e) {
-  if (e.keyCode === KEYMAP.up) {
-  	data.state.up = false
+  if (!data.state.isPlaying || !data.state.isAlive) {
+    data = initalizeGame()
+    start()
   }
-})
+}
 
-document.querySelector('#start').addEventListener('click', () => start())
-document.querySelector('#stop').addEventListener('click', () => stop())
+function handleRelease(e) {
+  data.state.up = false
+}
+
+document.addEventListener('touchstart', handlePress)
+document.addEventListener('keydown', handlePress)
+document.addEventListener('touchend', handleRelease)
+document.addEventListener('keyup', handleRelease)
 
 draw()
