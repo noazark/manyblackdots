@@ -59,11 +59,14 @@ window.onload = function () {
     });
 
     if (data.obstacles.length === 0) {
-      var type = Math.floor(Math.random() * obstacleTypes.length);
-      data.obstacles.push(Object.assign(obstacleTypes[type], {
+      var w = Math.floor(Math.random() * 40) + 20;
+      var h = 1400 / w;
+      data.obstacles.push({
         x: data.canvas.w * 1.5,
-        y: data.floor.y + data.floor.h
-      }));
+        y: data.floor.y + data.floor.h,
+        w: w,
+        h: h
+      });
     }
 
     data.obstacles.forEach(function (o) {
@@ -224,26 +227,6 @@ window.onload = function () {
 
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
-
-  var obstacleTypes = [{
-    type: 'obstacle',
-    x: 0,
-    y: 0,
-    w: 20,
-    h: 70
-  }, {
-    type: 'obstacle',
-    x: 0,
-    y: 0,
-    w: 40,
-    h: 40
-  }, {
-    type: 'obstacle',
-    x: 0,
-    y: 0,
-    w: 60,
-    h: 20
-  }];
 
   var stepableTypes = [{
     type: 'platform',
