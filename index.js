@@ -119,33 +119,40 @@ function stop() {
   data.state.isPlaying = false;
 }
 
+const BASE_OBSTACLE = {
+  type: 'obstacle',
+  h: 10,
+  w: 10,
+  x: 0,
+  y: 0,
+};
+
+const BASE_PLATFORM = {
+  type: 'platform',
+  h: 1,
+  w: 100,
+  x: 0,
+  y: 80,
+};
+
+const level1Obstacles = [
+  Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
+  Object.assign({}, BASE_OBSTACLE, { w: 30, h: 30, x: 1350 }),
+  Object.assign({}, BASE_OBSTACLE, { w: 20, h: 60, x: 2000 })
+];
+
+const level1Stepables = [
+  Object.assign({}, BASE_PLATFORM, { y: 0, w: 99999 }),
+  Object.assign({}, BASE_PLATFORM, { w: 100, x: 450, y: 40 }),
+  Object.assign({}, BASE_PLATFORM, { w: 100, x: 650, y: 40 }),
+  Object.assign({}, BASE_PLATFORM, { w: 200, x: 1250 }),
+  Object.assign({}, BASE_PLATFORM, { w: 200, x: 1550 }),
+  Object.assign({}, BASE_PLATFORM, { w: 100, x: 1850, y: 40 }),
+];
+
 function initalizeGame() {
-  const obstacles = [];
-  const stepables = [{
-    type: 'platform',
-    x: 0,
-    y: 0,
-    h: 1,
-    w: 99999
-  }];
-
-  for (let i=1; i <= 99; i++) {
-    const type = Math.floor(Math.random() * obstacleTypes.length);
-    const obstacle = Object.assign({}, obstacleTypes[type], {
-      x: 300 * 1.5 * i,
-      y: 1,
-    });
-    obstacles.push(obstacle);
-  }
-
-  for (let i=1; i <= 99; i++) {
-    const type = Math.floor(Math.random() * stepableTypes.length);
-    const stepable = Object.assign({}, stepableTypes[type], {
-      x: 300 * 1.2 * i,
-      y: 20 + Math.random() * 40,
-    });
-    stepables.push(stepable);
-  }
+  const obstacles = level1Obstacles;
+  const stepables = level1Stepables;
 
   return {
     score: 0,
@@ -186,46 +193,6 @@ function initalizeGame() {
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
-const obstacleTypes = [{
-  type: 'obstacle',
-  x: 0,
-  y: 0,
-  w: 20,
-  h: 70,
-}, {
-  type: 'obstacle',
-  x: 0,
-  y: 0,
-  w: 40,
-  h: 40,
-}, {
-  type: 'obstacle',
-  x: 0,
-  y: 0,
-  w: 60,
-  h: 20,
-}];
-
-const stepableTypes = [{
-  type: 'platform',
-  x: 0,
-  y: 0,
-  w: 60,
-  h: 1,
-}, {
-  type: 'platform',
-  x: 0,
-  y: 0,
-  w: 80,
-  h: 1,
-}, {
-  type: 'platform',
-  x: 0,
-  y: 0,
-  w: 100,
-  h: 1,
-}];
 
 let data = initalizeGame();
 
