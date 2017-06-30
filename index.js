@@ -1,4 +1,4 @@
-function _drawRect(r) {
+function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
   const width = r.w;
@@ -7,27 +7,31 @@ function _drawRect(r) {
   ctx.fillRect(x, y, width, height);
 }
 
-function drawBoxes(boxes) {
-  boxes.map((o) => reposition(data, o)).forEach(_drawRect);
+function reposition(data, o) {
+  return Object.assign({}, o, { x: o.x - data.config.offset });
 }
 
-function drawHero() {
-  _drawRect(data.hero);
+function drawBoxes(ctx, data, boxes) {
+  boxes.map((o) => reposition(data, o)).forEach((r) => _drawRect(ctx, data, r));
 }
 
-function drawScore() {
+function drawHero(ctx, data) {
+  _drawRect(ctx, data, data.hero);
+}
+
+function drawScore(ctx, data) {
   ctx.textAlign = 'left';
   ctx.font = "18px monospace";
   ctx.fillText(`${Math.floor(data.score)}`, 5, 23);
 }
 
-function drawGameOver() {
+function drawGameOver(ctx, data) {
   ctx.textAlign = 'center';
   ctx.font = "24px monospace";
   ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
 }
 
-function moveHero() {
+function moveHero(data) {
   if (data.state.up && !data.hero.hasClimaxed) {
     data.hero.isJumping = true;
     data.hero.dy = data.config.jumpAccel(data.hero.dy);
@@ -40,10 +44,6 @@ function moveHero() {
   }
 
   data.hero.y += data.hero.dy;
-}
-
-function reposition(data, o) {
-  return Object.assign({}, o, { x: o.x - data.config.offset });
 }
 
 function _detectCollision(a, b) {
@@ -63,6 +63,10 @@ function detectCollision(data, a, b) {
   });
 }
 
+function stop(data) {
+  data.state.isPlaying = false;
+}
+
 function handleCollision(data, collision) {
   if (collision == null) {
     return;
@@ -75,17 +79,17 @@ function handleCollision(data, collision) {
     data.hero.isJumping = false;
   } else if (collision.type === 'obstacle') {
     data.state.isAlive = false;
-    stop();
+    stop(data);
   }
 }
 
-function draw() {
+function draw(canvas, ctx, data) {
   if (data.state.isPlaying) {
-    window.requestAnimationFrame(() => draw());
+    window.requestAnimationFrame(() => draw(canvas, ctx, data));
   }
 
   data.config.offset += data.config.gameSpeed;
-  moveHero();
+  moveHero(data);
 
   // return first detected collision
   const collision = [
@@ -98,24 +102,20 @@ function draw() {
   if (data.state.isAlive) {
     data.score += 0.4;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawHero();
-    drawBoxes(data.obstacles);
-    drawBoxes(data.stepables);
-    drawScore();
+    drawHero(ctx, data);
+    drawBoxes(ctx, data, data.obstacles);
+    drawBoxes(ctx, data, data.stepables);
+    drawScore(ctx, data);
   } else {
-    drawGameOver();
+    drawGameOver(ctx, data);
   }
 }
 
-function start() {
+function start(canvas, ctx, data) {
   if (data.state.isPlaying === false) {
     data.state.isPlaying = true;
-    draw();
+    draw(canvas, ctx, data);
   }
-}
-
-function stop() {
-  data.state.isPlaying = false;
 }
 
 const BASE_OBSTACLE = {
@@ -203,18 +203,18 @@ canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2, 2);
 ctx.fillStyle = '#333333';
 
-function handlePress(e) {
+function handlePress() {
   if (!data.hero.isJumping) {
     data.state.up = true;
   }
 
   if (!data.state.isPlaying || !data.state.isAlive) {
     data = initalizeGame();
-    start();
+    start(canvas, ctx, data);
   }
 }
 
-function handleRelease(e) {
+function handleRelease() {
   data.state.up = false;
 }
 
@@ -223,4 +223,4 @@ document.addEventListener('keydown', handlePress);
 document.addEventListener('touchend', handleRelease);
 document.addEventListener('keyup', handleRelease);
 
-draw();
+draw(canvas, ctx, data);
