@@ -84,7 +84,6 @@ function draw() {
     window.requestAnimationFrame(() => draw());
   }
 
-  data.config.gameSpeed *= data.config.deltaGameSpeed;
   data.config.offset += data.config.gameSpeed;
   moveHero();
 
