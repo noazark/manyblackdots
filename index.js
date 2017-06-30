@@ -7,16 +7,8 @@ function _drawRect(r) {
   ctx.fillRect(x, y, width, height);
 }
 
-function drawFloor() {
-  _drawRect(data.floor);
-}
-
-function drawObstacles() {
-  data.obstacles.forEach(_drawRect);
-}
-
-function drawStepables() {
-  data.stepables.forEach(_drawRect);
+function drawBoxes(boxes) {
+  boxes.map((o) => reposition(data, o)).forEach(_drawRect);
 }
 
 function drawHero() {
@@ -50,67 +42,8 @@ function moveHero() {
   data.hero.y += data.hero.dy;
 }
 
-function moveObstacles() {
-  data.obstacles = data.obstacles.filter((o) => o.x + o.w >= 0);
-
-  if (data.obstacles.length === 0) {
-    const type = Math.floor(Math.random() * obstacleTypes.length);
-    data.obstacles.push(Object.assign(obstacleTypes[type], {
-      x: data.canvas.w * 1.5,
-      y: data.floor.y + data.floor.h,
-    }));
-  }
-
-  data.obstacles.forEach((o) => o.x -= data.config.gameSpeed);
-}
-
-function moveStepables() {
-  data.stepables = data.stepables.filter((o) => o.x + o.w >= 0);
-
-  if (data.stepables.length === 0) {
-    const type = Math.floor(Math.random() * stepableTypes.length);
-    data.stepables.push(Object.assign(stepableTypes[type], {
-      x: data.canvas.w * 1.2,
-      y: 20 + Math.random() * 40,
-    }));
-  }
-
-  data.stepables.forEach((o) => o.x -= data.config.gameSpeed);
-}
-
-function detectFloorCollision() {
-  const hasCollided = _detectCollision(data.hero, data.floor);
-
-  if (hasCollided) {
-    data.hero.y = data.floor.y + data.floor.h;
-    data.hero.dy = 0;
-    data.hero.hasClimaxed = false;
-    data.hero.isJumping = false;
-  }
-}
-
-function detectStepableCollision() {
-  data.stepables.find((o) => {
-    const hasCollided = _detectCollision(data.hero, o);
-
-    if (hasCollided) {
-      data.hero.y = o.y + o.h;
-      data.hero.dy = 0;
-      data.hero.hasClimaxed = false;
-      data.hero.isJumping = false;
-    }
-  });
-}
-
-function detectObstacleCollision() {
-  data.obstacles.find((o) => {
-    const hasCollided = _detectCollision(data.hero, o);
-
-    if (hasCollided) {
-      data.state.isAlive = false;
-      stop();
-    }
-  });
+function reposition(data, o) {
+  return Object.assign({}, o, { x: o.x - data.config.offset });
 }
 
 function _detectCollision(a, b) {
@@ -124,26 +57,51 @@ function _detectCollision(a, b) {
   }
 }
 
+function detectCollision(data, a, b) {
+  return b.find((o) => {
+    return _detectCollision(a, reposition(data, o));
+  });
+}
+
+function handleCollision(data, collision) {
+  if (collision == null) {
+    return;
+  }
+
+  if (collision.type === 'platform') {
+    data.hero.y = collision.y + collision.h;
+    data.hero.dy = 0;
+    data.hero.hasClimaxed = false;
+    data.hero.isJumping = false;
+  } else if (collision.type === 'obstacle') {
+    data.state.isAlive = false;
+    stop();
+  }
+}
+
 function draw() {
   if (data.state.isPlaying) {
     window.requestAnimationFrame(() => draw());
   }
 
   data.config.gameSpeed *= data.config.deltaGameSpeed;
+  data.config.offset += data.config.gameSpeed;
   moveHero();
-  moveObstacles();
-  moveStepables();
-  detectObstacleCollision();
-  detectStepableCollision();
-  detectFloorCollision();
+
+  // return first detected collision
+  const collision = [
+    detectCollision(data, data.hero, data.obstacles),
+    detectCollision(data, data.hero, data.stepables)
+  ].find(val => val);
+
+  handleCollision(data, collision);
 
   if (data.state.isAlive) {
     data.score += 0.4;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawFloor();
     drawHero();
-    drawObstacles();
-    drawStepables();
+    drawBoxes(data.obstacles);
+    drawBoxes(data.stepables);
     drawScore();
   } else {
     drawGameOver();
@@ -162,11 +120,39 @@ function stop() {
 }
 
 function initalizeGame() {
+  const obstacles = [];
+  const stepables = [{
+    type: 'platform',
+    x: 0,
+    y: 0,
+    h: 1,
+    w: 99999
+  }];
+
+  for (let i=1; i <= 99; i++) {
+    const type = Math.floor(Math.random() * obstacleTypes.length);
+    const obstacle = Object.assign({}, obstacleTypes[type], {
+      x: 300 * 1.5 * i,
+      y: 1,
+    });
+    obstacles.push(obstacle);
+  }
+
+  for (let i=1; i <= 99; i++) {
+    const type = Math.floor(Math.random() * stepableTypes.length);
+    const stepable = Object.assign({}, stepableTypes[type], {
+      x: 300 * 1.2 * i,
+      y: 20 + Math.random() * 40,
+    });
+    stepables.push(stepable);
+  }
+
   return {
     score: 0,
     config: {
+      offset: 0,
       jumpAccelMax: 12,
-      jumpAccel: (d) => d + 1.5,
+      jumpAccel: (d) => d + 1.2,
       jumpDecel: (d) => d - 1.8,
       gameSpeed: 5,
       deltaGameSpeed: 1.0005,
@@ -187,21 +173,14 @@ function initalizeGame() {
       h: 10,
       w: 10,
       x: 30,
-      y: 6,
+      y: 1,
       dx: 0,
       dy: 0,
       isJumping: false,
       hasClimaxed: false,
     },
-    floor: {
-      type: 'platform',
-      h: 1,
-      w: 300,
-      x: 0,
-      y: 0,
-    },
-    obstacles: [],
-    stepables: []
+    obstacles,
+    stepables
   };
 }
 
