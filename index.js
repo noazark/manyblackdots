@@ -126,9 +126,7 @@ function _detectCollision(a, b) {
 
 function draw() {
   if (data.state.isPlaying) {
-    setTimeout(() => {
-      window.requestAnimationFrame(() => draw());
-    }, 15);
+    window.requestAnimationFrame(() => draw());
   }
 
   data.config.gameSpeed *= data.config.deltaGameSpeed;
