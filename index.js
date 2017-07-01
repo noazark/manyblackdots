@@ -32,12 +32,12 @@ function moveHero(data, frame) {
 
   heros.forEach((hero) => {
     if (data.state.up && !hero.hasClimaxed) {
-      hero.dy = data.config.jumpAccel(hero.dy);
-    } else {
-      hero.dy = data.config.jumpDecel(hero.dy);
+      hero.dy = hero.force(hero.dy);
     }
 
-    if (hero.dy > data.config.jumpAccelMax) {
+    hero.dy = hero.accel(hero.dy);
+
+    if (hero.dy > hero.maxForce) {
       hero.hasClimaxed = true;
     }
 
@@ -142,19 +142,7 @@ function start(canvas, ctx, data) {
 }
 
 const BASE_CONFIG = {
-  cameraX: -30,
-  jumpAccelMax: 15,
-  jumpAccel: (d) => d + 1.2,
-  jumpDecel: (d) => d - 1.8,
-  gameSpeed: (data) => {
-    let speed = 4;
-
-    if (isJumping(data)) {
-      speed += 1;
-    }
-
-    return speed;
-  },
+  cameraX: -30
 };
 
 export const BASE_OBSTACLE = {
@@ -181,6 +169,9 @@ export const BASE_HERO = {
   y: 0,
   dx: 0.35,
   dy: 0,
+  maxForce: 15,
+  force: (d) => d + 3,
+  accel: (d) => d - 1.8,
   isJumping: false,
   hasClimaxed: false,
 };
