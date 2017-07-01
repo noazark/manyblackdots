@@ -91,9 +91,13 @@ function handleCollisions(data, collisions) {
 }
 
 function draw(canvas, ctx, data) {
-  const frame = {
-    dt: Date.now() - data.state.startTime
-  };
+  const frame = {};
+
+  if (data.state.startTime && data.state.isPlaying) {
+    frame.dt = Date.now() - data.state.startTime;
+  } else {
+    frame.dt = 0;
+  }
 
   if (data.state.isPlaying) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data));
