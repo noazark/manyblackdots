@@ -6,7 +6,7 @@ function _drawRect(ctx, data, r) {
   const height = r.h;
 
   ctx.fillStyle = '#333333';
-  ctx.fillRect(x - data.state.offset, y, width, height);
+  ctx.fillRect(x - data.config.cameraX(data), y, width, height);
 }
 
 function drawBoxes(ctx, data, boxes) {
@@ -142,7 +142,9 @@ function start(canvas, ctx, data) {
 }
 
 const BASE_CONFIG = {
-  cameraX: -30
+  cameraX: (d) => {
+    return d.map.find((el) => el.type === 'hero').x - 30;
+  }
 };
 
 export const BASE_OBSTACLE = {
