@@ -103,16 +103,16 @@ function draw(canvas, ctx, data) {
   moveHero(data);
 
   // return first detected collision
-  const collisions = detectCollision(data, data.hero, data.level);
+  const collisions = detectCollision(data, data.hero, data.map);
 
   handleCollisions(data, collisions);
 
   if (data.state.isAlive) {
     data.score += 0.4;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawHero(ctx, data);
-    drawBoxes(ctx, data, data.level);
+    drawBoxes(ctx, data, data.map);
     drawScore(ctx, data);
+    drawHero(ctx, data);
   } else {
     drawGameOver(ctx, data);
   }
@@ -142,31 +142,44 @@ const BASE_PLATFORM = {
   y: 80,
 };
 
-const level1 = [
-  Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
-  Object.assign({}, BASE_PLATFORM, { y: 0, w: 99999 }),
-  Object.assign({}, BASE_PLATFORM, { w: 100, x: 450, y: 40 }),
-  Object.assign({}, BASE_PLATFORM, { w: 100, x: 650, y: 40 }),
-  Object.assign({}, BASE_PLATFORM, { w: 200, x: 1250 }),
-  Object.assign({}, BASE_OBSTACLE, { w: 30, h: 30, x: 1350 }),
-  Object.assign({}, BASE_PLATFORM, { w: 200, x: 1550 }),
-  Object.assign({}, BASE_PLATFORM, { w: 300, x: 1850, y: 40 }),
-  Object.assign({}, BASE_OBSTACLE, { w: 20, h: 60, x: 2000 }),
-];
+const level1 = {
+  config: {
+    scrollrate: 1/3,
+    jumpAccelMax: 15,
+    jumpAccel: (d) => d + 1.2,
+    jumpDecel: (d) => d - 1.8,
+    gameSpeed: (data) => {
+      let speed = 4;
+
+      if (isJumping(data)) {
+        speed += 1;
+      }
+
+      return speed;
+    },
+  },
+  map: [
+    Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
+    Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
+    Object.assign({}, BASE_PLATFORM, { w: 100, x: 200, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 500, x: 450, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 50, x: 1000, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 50, x: 1150, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 50, x: 1300, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 50, x: 1450, y: 40 }),
+    Object.assign({}, BASE_PLATFORM, { w: 200, x: 1650, y: 160 }),
+    Object.assign({}, BASE_PLATFORM, { w: 130, x: 1950, y: 80 }),
+    Object.assign({}, BASE_PLATFORM, { w: 150, x: 2280, y: 120 }),
+    Object.assign({}, BASE_PLATFORM, { w: 300, x: 2200, y: 70 }),
+    Object.assign({}, BASE_PLATFORM, { w: 200, x: 2650, y: 180 }),
+    Object.assign({}, BASE_OBSTACLE, { w: 20, h: 1000, x: 2530, y: 200 }),
+  ]
+};
 
 function initalizeGame() {
-  const level = level1;
+  const { config, map } = level1;
 
   return {
-    score: 0,
-    config: {
-      offset: 0,
-      jumpAccelMax: 12,
-      jumpAccel: (d) => d + 1.2,
-      jumpDecel: (d) => d - 1.8,
-      gameSpeed: 5,
-      deltaGameSpeed: 1.0005,
-    },
     canvas: {
       h: 300,
       w: 300
@@ -190,7 +203,8 @@ function initalizeGame() {
       isJumping: false,
       hasClimaxed: false,
     },
-    level,
+    config,
+    map,
   };
 }
 
