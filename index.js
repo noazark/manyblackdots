@@ -8,7 +8,7 @@ function _drawRect(ctx, data, r) {
 }
 
 function reposition(data, o) {
-  return Object.assign({}, o, { x: o.x - data.config.offset });
+  return Object.assign({}, o, { x: o.x - data.state.offset });
 }
 
 function drawBoxes(ctx, data, boxes) {
@@ -22,7 +22,7 @@ function drawHero(ctx, data) {
 function drawScore(ctx, data) {
   ctx.textAlign = 'left';
   ctx.font = "18px monospace";
-  ctx.fillText(`${Math.floor(data.score)}`, 5, 23);
+  ctx.fillText(`${Math.floor(data.state.offset/1000) || 0}`, 5, 23);
 }
 
 function drawGameOver(ctx, data) {
@@ -88,11 +88,15 @@ function handleCollisions(data, collisions) {
 }
 
 function draw(canvas, ctx, data) {
+  const frame = {
+    dt: Date.now() - data.state.startTime
+  };
+
   if (data.state.isPlaying) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data));
   }
 
-  data.config.offset += data.config.gameSpeed;
+  data.state.offset = frame.dt * data.config.scrollrate;
   moveHero(data);
 
   // return first detected collision
@@ -113,6 +117,7 @@ function draw(canvas, ctx, data) {
 
 function start(canvas, ctx, data) {
   if (data.state.isPlaying === false) {
+    data.state.startTime = Date.now();
     data.state.isPlaying = true;
     draw(canvas, ctx, data);
   }
@@ -164,6 +169,7 @@ function initalizeGame() {
       w: 300
     },
     state: {
+      offset: 0,
       isAlive: true,
       isPlaying: false,
       up: false,
