@@ -33,7 +33,6 @@ function drawGameOver(ctx, data) {
 
 function moveHero(data) {
   if (data.state.up && !data.hero.hasClimaxed) {
-    data.hero.isJumping = true;
     data.hero.dy = data.config.jumpAccel(data.hero.dy);
   } else {
     data.hero.dy = data.config.jumpDecel(data.hero.dy);
@@ -44,6 +43,10 @@ function moveHero(data) {
   }
 
   data.hero.y += data.hero.dy;
+}
+
+function isJumping(data) {
+  return data.hero.dy != 0;
 }
 
 function _detectCollision(a, b) {
@@ -77,7 +80,6 @@ function handleCollisions(data, collisions) {
       data.hero.y = collision.y + collision.h;
       data.hero.dy = 0;
       data.hero.hasClimaxed = false;
-      data.hero.isJumping = false;
     } else if (collision.type === 'obstacle') {
       data.state.isAlive = false;
       stop(data);
@@ -197,7 +199,7 @@ ctx.scale(2, 2);
 ctx.fillStyle = '#333333';
 
 function handlePress() {
-  if (!data.hero.isJumping) {
+  if (data.state.isPlaying && !isJumping(data)) {
     data.state.up = true;
   }
 
