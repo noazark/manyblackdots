@@ -179,13 +179,17 @@ import {
   ladder,
   fallTest,
   verticalPlatform,
+  jump,
+  impossiblePlatform,
 } from './maps/test';
 
 const levels = {
   level1,
   ladder,
   fallTest,
-  verticalPlatform
+  verticalPlatform,
+  jump,
+  impossiblePlatform
 };
 
 function initalizeGame() {
