@@ -112,16 +112,12 @@ function draw(canvas, ctx, data, lastFrame) {
 
   if (data.state.isPlaying) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data, frame));
+
+    moveHero(data, frame, frame);
+
+    const collisions = detectCollision(data, data.map);
+    handleCollisions(data, collisions);
   }
-
-
-  moveHero(data, frame, frame);
-
-  const firstHero = data.map.find((el) => el.type === 'hero');
-  data.state.offset = firstHero.x + data.config.cameraX;
-
-  const collisions = detectCollision(data, data.map);
-  handleCollisions(data, collisions);
 
   if (data.state.isAlive) {
     data.score += 0.4;
