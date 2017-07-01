@@ -1,3 +1,4 @@
+
 function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
@@ -27,21 +28,23 @@ function drawGameOver(ctx, data) {
 }
 
 function moveHero(data, frame) {
-  const hero = data.map.find((el) => el.type === 'hero');
+  const heros = data.map.filter((el) => el.type === 'hero');
 
-  hero.x += frame.dt;
+  heros.forEach((hero) => {
+    if (data.state.up && !hero.hasClimaxed) {
+      hero.dy = data.config.jumpAccel(hero.dy);
+    } else {
+      hero.dy = data.config.jumpDecel(hero.dy);
+    }
 
-  if (data.state.up && !hero.hasClimaxed) {
-    hero.dy = data.config.jumpAccel(hero.dy);
-  } else {
-    hero.dy = data.config.jumpDecel(hero.dy);
-  }
+    if (hero.dy > data.config.jumpAccelMax) {
+      hero.hasClimaxed = true;
+    }
 
-  if (hero.dy > data.config.jumpAccelMax) {
-    hero.hasClimaxed = true;
-  }
+    hero.x += frame.dt * hero.dx;
 
-  hero.y += hero.dy;
+    hero.y += hero.dy;
+  });
 }
 
 function isJumping(data) {
@@ -93,23 +96,29 @@ function handleCollisions(data, collisions) {
   });
 }
 
-function draw(canvas, ctx, data) {
+function draw(canvas, ctx, data, lastFrame) {
   const frame = {};
 
   if (data.state.startTime && data.state.isPlaying) {
     frame.pos = Date.now() - data.state.startTime;
-    frame.dt = frame.pos * data.config.scrollrate - data.state.offset;
+    if (lastFrame) {
+      frame.dt = frame.pos - lastFrame.pos;
+    } else {
+      frame.dt = 0;
+    }
   } else {
     frame.dt = 0;
   }
 
   if (data.state.isPlaying) {
-    window.requestAnimationFrame(() => draw(canvas, ctx, data));
+    window.requestAnimationFrame(() => draw(canvas, ctx, data, frame));
   }
 
-  data.state.offset += frame.dt;
 
   moveHero(data, frame, frame);
+
+  const firstHero = data.map.find((el) => el.type === 'hero');
+  data.state.offset = firstHero.x + data.config.cameraX;
 
   const collisions = detectCollision(data, data.map);
   handleCollisions(data, collisions);
@@ -132,7 +141,23 @@ function start(canvas, ctx, data) {
   }
 }
 
-const BASE_OBSTACLE = {
+const BASE_CONFIG = {
+  cameraX: -30,
+  jumpAccelMax: 15,
+  jumpAccel: (d) => d + 1.2,
+  jumpDecel: (d) => d - 1.8,
+  gameSpeed: (data) => {
+    let speed = 4;
+
+    if (isJumping(data)) {
+      speed += 1;
+    }
+
+    return speed;
+  },
+};
+
+export const BASE_OBSTACLE = {
   type: 'obstacle',
   h: 10,
   w: 10,
@@ -140,7 +165,7 @@ const BASE_OBSTACLE = {
   y: 0,
 };
 
-const BASE_PLATFORM = {
+export const BASE_PLATFORM = {
   type: 'platform',
   h: 1,
   w: 100,
@@ -148,57 +173,34 @@ const BASE_PLATFORM = {
   y: 80,
 };
 
-const BASE_HERO = {
+export const BASE_HERO = {
   type: 'hero',
   h: 10,
   w: 10,
   x: 0,
   y: 0,
-  dx: 0,
+  dx: 0.35,
   dy: 0,
   isJumping: false,
   hasClimaxed: false,
 };
 
-function level1() {
-  return {
-    config: {
-      scrollrate: 1/3,
-      jumpAccelMax: 15,
-      jumpAccel: (d) => d + 1.2,
-      jumpDecel: (d) => d - 1.8,
-      gameSpeed: (data) => {
-        let speed = 4;
+import { level1 } from './maps/main';
+import {
+  ladder,
+  fallTest,
+  verticalPlatform,
+} from './maps/test';
 
-        if (isJumping(data)) {
-          speed += 1;
-        }
-
-        return speed;
-      },
-    },
-    map: [
-      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
-      Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
-      Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
-      Object.assign({}, BASE_PLATFORM, { w: 100, x: 200, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 500, x: 450, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1000, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1150, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1300, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1450, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 200, x: 1650, y: 160 }),
-      Object.assign({}, BASE_PLATFORM, { w: 130, x: 1950, y: 80 }),
-      Object.assign({}, BASE_PLATFORM, { w: 150, x: 2280, y: 120 }),
-      Object.assign({}, BASE_PLATFORM, { w: 300, x: 2200, y: 70 }),
-      Object.assign({}, BASE_PLATFORM, { w: 200, x: 2650, y: 180 }),
-      Object.assign({}, BASE_OBSTACLE, { w: 20, h: 1000, x: 2530, y: 200 }),
-    ]
-  };
-}
+const levels = {
+  level1,
+  ladder,
+  fallTest,
+  verticalPlatform
+};
 
 function initalizeGame() {
-  const { config, map } = level1();
+  const { config, map } = levels.level1();
 
   return {
     canvas: {
@@ -214,7 +216,7 @@ function initalizeGame() {
       left: false,
       right: false,
     },
-    config,
+    config: Object.assign({}, BASE_CONFIG, config),
     map,
   };
 }

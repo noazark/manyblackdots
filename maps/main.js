@@ -1,0 +1,23 @@
+import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../index';
+
+export function level1() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
+      Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
+      Object.assign({}, BASE_PLATFORM, { w: 100, x: 200, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 500, x: 450, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1000, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1150, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1300, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 50, x: 1450, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 500, x: 1650, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 200, x: 2150, y: 160 }),
+      Object.assign({}, BASE_PLATFORM, { w: 300, x: 2530, y: 70 }),
+      Object.assign({}, BASE_PLATFORM, { w: 150, x: 2610, y: 120 }),
+      Object.assign({}, BASE_OBSTACLE, { w: 20, h: 1000, x: 2860, y: 200 }),
+      Object.assign({}, BASE_PLATFORM, { w: 200, x: 2980, y: 180 }),
+    ]
+  };
+}
