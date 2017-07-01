@@ -24,7 +24,7 @@ function drawScore(ctx, data) {
   ctx.fillStyle = '#333333';
   ctx.textAlign = 'left';
   ctx.font = "18px monospace";
-  ctx.fillText(`${Math.floor(data.state.offset/1000) || 0}`, 5, 23);
+  ctx.fillText(`${Math.floor((Date.now() - data.state.startTime)/1000) || 0}`, 5, 23);
 }
 
 function drawGameOver(ctx, data) {
