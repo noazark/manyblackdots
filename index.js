@@ -4,6 +4,7 @@ function _drawRect(ctx, data, r) {
   const width = r.w;
   const height = r.h;
 
+  ctx.fillStyle = '#333333';
   ctx.fillRect(x, y, width, height);
 }
 
@@ -20,12 +21,14 @@ function drawHero(ctx, data) {
 }
 
 function drawScore(ctx, data) {
+  ctx.fillStyle = '#333333';
   ctx.textAlign = 'left';
   ctx.font = "18px monospace";
   ctx.fillText(`${Math.floor(data.state.offset/1000) || 0}`, 5, 23);
 }
 
 function drawGameOver(ctx, data) {
+  ctx.fillStyle = '#333333';
   ctx.textAlign = 'center';
   ctx.font = "24px monospace";
   ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
@@ -202,7 +205,6 @@ canvas.height = data.canvas.h * 2;
 canvas.style.width = `${data.canvas.w}px`;
 canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2, 2);
-ctx.fillStyle = '#333333';
 
 function handlePress() {
   if (data.state.isPlaying && !isJumping(data)) {
