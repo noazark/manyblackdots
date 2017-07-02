@@ -35,15 +35,7 @@ function moveHero(data, frame) {
   const heros = data.map.filter((el) => el.type === 'hero');
 
   heros.forEach((hero) => {
-    if (data.state.up && !hero.hasClimaxed) {
-      hero.dy = hero.force(hero.dy);
-    }
-
-    hero.dy = hero.accel(hero.dy);
-
-    if (hero.dy > hero.maxForce) {
-      hero.hasClimaxed = true;
-    }
+    Object.assign(hero, hero.accel(data));
 
     hero.x += frame.dt * hero.dx;
 

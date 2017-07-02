@@ -23,8 +23,9 @@ export function fallTest() {
         x: 15 * i,
         y: 250 + 20 * i,
         forceMax: 2,
-        accel: (d) => d - 0.15,
-        accelX: () => 0,
+        accel() {
+          return { dy: this.dy - 0.15, dx: 0 };
+        },
         dx: 0
       }),
       Object.assign({}, BASE_PLATFORM, { x: 15 * i, y: 110, w: 10 }),
@@ -34,7 +35,9 @@ export function fallTest() {
 
   return {
     config: {
-      cameraX: () => 0,
+      cameraX() {
+        return 0;
+      },
       showCollisions: true
     },
     map: [
@@ -51,7 +54,9 @@ export function verticalPlatform() {
         x: 30,
         y: 1,
         dx: 0.3,
-        force: () => 0
+        force() {
+          return 0;
+        }
       }),
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 200, y: 0, w: 1, h: 50 }),
@@ -63,7 +68,9 @@ export function verticalPlatform() {
 export function jump() {
   return {
     config: {
-      cameraX: () => 0
+      cameraX() {
+        return 0;
+      }
     },
     map: [
       Object.assign({}, BASE_HERO, { x: 30, y: 1, dy: 20 }),
@@ -77,7 +84,9 @@ export function jump() {
 export function impossiblePlatform() {
   return {
     config: {
-      cameraX: () => 0
+      cameraX() {
+        return 0;
+      }
     },
     map: [
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
