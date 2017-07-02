@@ -91,7 +91,6 @@ function handleCollisions(data, collisions) {
       hero.hasClimaxed = false;
     } else if (collision.type === 'obstacle') {
       data.state.isAlive = false;
-      stop(data);
     }
   });
 }
@@ -195,13 +194,16 @@ canvas.style.width = `${data.canvas.w}px`;
 canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2, 2);
 
-function handlePress() {
+function handlePress(e) {
   if (data.state.isPlaying && !isJumping(data)) {
     data.state.up = true;
   }
 
-  if (!data.state.isPlaying || !data.state.isAlive) {
+  if (!data.state.isAlive) {
     data = initalizeGame();
+  }
+
+  if (!data.state.isPlaying) {
     start(canvas, ctx, data);
   }
 }
