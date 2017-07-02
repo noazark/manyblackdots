@@ -5,6 +5,11 @@ function _drawRect(ctx, data, r) {
   const height = r.h;
 
   ctx.fillStyle = r.color;
+
+  if (data.config.showCollisions && r.inCollision) {
+    ctx.fillStyle = 'red';
+  }
+
   ctx.fillRect(x - data.config.cameraX(data), y, width, height);
 }
 
@@ -67,9 +72,16 @@ function detectCollision(data, map) {
   const collisions = [];
   const heros = map.filter((o) => o.type === 'hero');
 
+  map.forEach(o => {
+    o.inCollision = false;
+  });
+
   heros.forEach((a) => {
     map.forEach((o) => {
       if (_detectCollision(a, o)) {
+        a.inCollision = true;
+        o.inCollision = true;
+
         collisions.push([a, o]);
       }
     });
@@ -112,19 +124,18 @@ function draw(canvas, ctx, data, lastFrame) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data, frame));
   }
 
-  if (data.state.isPlaying) {
+  if (data.state.isPlaying && data.state.isAlive) {
     moveHero(data, frame, frame);
 
     const collisions = detectCollision(data, data.map);
     handleCollisions(data, collisions);
   }
 
-  if (data.state.isAlive) {
-    data.score += 0.4;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBoxes(ctx, data, data.map);
-    drawScore(ctx, data);
-  } else {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBoxes(ctx, data, data.map);
+  drawScore(ctx, data);
+
+  if (!data.state.isAlive) {
     drawGameOver(ctx, data);
   }
 }
@@ -140,7 +151,8 @@ function start(canvas, ctx, data) {
 const BASE_CONFIG = {
   cameraX: (d) => {
     return d.map.find((el) => el.type === 'hero').x - 30;
-  }
+  },
+  showCollisions: false
 };
 
 import { level1 } from './maps/main';
