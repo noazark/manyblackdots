@@ -162,6 +162,7 @@ import {
   verticalPlatform,
   jump,
   impossiblePlatform,
+  thinGap,
 } from './maps/test';
 
 const levels = {
@@ -170,11 +171,12 @@ const levels = {
   fallTest,
   verticalPlatform,
   jump,
-  impossiblePlatform
+  impossiblePlatform,
+  thinGap,
 };
 
 function initalizeGame() {
-  const { config, map } = levels.level1();
+  const { config, map } = levels.thinGap();
 
   return {
     canvas: {

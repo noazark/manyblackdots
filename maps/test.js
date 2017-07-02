@@ -24,14 +24,19 @@ export function fallTest() {
         y: 250 + 20 * i,
         forceMax: 2,
         accel: (d) => d - 0.15,
+        accelX: () => 0,
         dx: 0
       }),
-      Object.assign({}, BASE_PLATFORM, { x: 15 * i, y: 120 - Number(i), w: 10 }),
+      Object.assign({}, BASE_PLATFORM, { x: 15 * i, y: 110, w: 10 }),
       Object.assign({}, BASE_OBSTACLE, { x: 15 * i, y: 50, w: 10, h: 50 }),
     ]);
   }
 
   return {
+    config: {
+      cameraX: () => 0,
+      showCollisions: true
+    },
     map: [
       ...mapItems
     ]
@@ -82,6 +87,31 @@ export function impossiblePlatform() {
       // this platform should not be reachable
       Object.assign({}, BASE_HERO, { x: 220, y: 1, dx: 0 }),
       Object.assign({}, BASE_PLATFORM, { x: 150, y: 180, w: 150 }),
+    ]
+  };
+}
+
+export function thinGap() {
+  let mapItems = [];
+
+  for (let i = 0; i < 50; i++) {
+    mapItems = mapItems.concat([
+      Object.assign({}, BASE_PLATFORM, { x: 100 * i, y: 50, w: 100 - Number(i) }),
+    ]);
+  }
+
+  return {
+    config: {
+      showCollisions: true
+    },
+    map: [
+      ...mapItems,
+      Object.assign({}, BASE_HERO, {
+        x: 30,
+        y: 51,
+        dx: 3
+      }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: 0, w: 99999, h: 10 }),
     ]
   };
 }
