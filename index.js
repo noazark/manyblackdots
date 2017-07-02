@@ -13,6 +13,57 @@ function _drawRect(ctx, data, r) {
   ctx.fillRect(x - data.config.cameraX(data), y, width, height);
 }
 
+function drawVectors(ctx, data, boxes) {
+  boxes.forEach((r) => {
+    ctx.strokeStyle = 'red';
+    ctx.beginPath();
+    const cx = r.x - data.config.cameraX(data) + r.w / 2;
+    const cy = data.canvas.h - r.y - r.h + r.h / 2;
+
+    const vx = r.dx * 50;
+    const vy = r.dy * 50;
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx - vx, cy - vy);
+    ctx.stroke();
+  });
+}
+
+function drawGhosts(ctx, data, boxes) {
+  boxes.forEach((r) => {
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(r.x0 - data.config.cameraX(data), data.canvas.h - r.y0 - r.h, r.w, r.h);
+  });
+}
+
+function getHitbox(a, b) {
+  return {
+    ax0: a.x,
+    bx0: b.x + b.w,
+    ax1: a.x + a.w - a.dx,
+    bx1: b.x - b.h,
+    ay0: a.y,
+    by0: b.y + b.h,
+    ay1: a.y + a.h - a.dy,
+    by1: b.y - b.h,
+  };
+}
+
+function drawHitbox(ctx, data, collisions) {
+  collisions.forEach(([a, b]) => {
+    const {
+      ax0, bx0,
+      ax1, bx1,
+      ay0, by0,
+      ay1, by1,
+    } = getHitbox(a, b);
+
+    ctx.fillStyle = 'green';
+    ctx.fillRect(ax0 - data.config.cameraX(data), data.canvas.h - ay0, ax1 - ax0, ay1 - ay0);
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(bx0 - data.config.cameraX(data), data.canvas.h - by0, bx1 - bx0, by1 - by0);
+  });
+}
+
 function drawBoxes(ctx, data, boxes) {
   boxes.forEach((r) => _drawRect(ctx, data, r));
 }
@@ -37,9 +88,11 @@ function moveHero(data, frame) {
   heros.forEach((hero) => {
     Object.assign(hero, hero.accel(data));
 
-    hero.x += frame.dt * hero.dx;
+    hero.x0 = hero.x;
+    hero.y0 = hero.y;
 
-    hero.y += hero.dy;
+    hero.x += frame.dt * hero.dx;
+    hero.y += frame.dt * hero.dy;
   });
 }
 
@@ -49,11 +102,18 @@ function isJumping(data) {
 }
 
 function _detectCollision(a, b) {
+  const {
+    ax0, bx0,
+    ax1, bx1,
+    ay0, by0,
+    ay1, by1,
+  } = getHitbox(a, b);
+
   if (a !== b &&
-     a.x < b.x + b.w &&
-     a.x + a.w - a.dx > b.x &&
-     a.y < b.y + b.h &&
-     a.h - a.dy + a.y > b.y) {
+     ax0 < bx0 &&
+     ax1 > bx1 &&
+     ay0 < by0 &&
+     ay1 > by1) {
     return true;
   } else {
     return false;
@@ -116,16 +176,26 @@ function draw(canvas, ctx, data, lastFrame) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data, frame));
   }
 
-  if (data.state.isPlaying && data.state.isAlive) {
-    moveHero(data, frame, frame);
+  moveHero(data, frame, frame);
 
-    const collisions = detectCollision(data, data.map);
-    handleCollisions(data, collisions);
-  }
+  const collisions = detectCollision(data, data.map);
+  handleCollisions(data, collisions);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBoxes(ctx, data, data.map);
   drawScore(ctx, data);
+
+  if (data.config.showGhosts) {
+    drawGhosts(ctx, data, data.map);
+  }
+
+  if (data.config.drawHitbox) {
+    drawHitbox(ctx, data, collisions);
+  }
+
+  if (data.config.showVectors) {
+    drawVectors(ctx, data, data.map);
+  }
 
   if (!data.state.isAlive) {
     drawGameOver(ctx, data);
@@ -144,7 +214,10 @@ const BASE_CONFIG = {
   cameraX: (d) => {
     return d.map.find((el) => el.type === 'hero').x - 30;
   },
-  showCollisions: false
+  showCollisions: true,
+  showVectors: true,
+  showGhosts: true,
+  drawHitbox: true,
 };
 
 import { level1 } from './maps/main';
