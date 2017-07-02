@@ -5,7 +5,7 @@ function _drawRect(ctx, data, r) {
   const width = r.w;
   const height = r.h;
 
-  ctx.fillStyle = '#333333';
+  ctx.fillStyle = r.color;
   ctx.fillRect(x - data.config.cameraX(data), y, width, height);
 }
 
@@ -141,37 +141,6 @@ const BASE_CONFIG = {
   cameraX: (d) => {
     return d.map.find((el) => el.type === 'hero').x - 30;
   }
-};
-
-export const BASE_OBSTACLE = {
-  type: 'obstacle',
-  h: 10,
-  w: 10,
-  x: 0,
-  y: 0,
-};
-
-export const BASE_PLATFORM = {
-  type: 'platform',
-  h: 1,
-  w: 100,
-  x: 0,
-  y: 80,
-};
-
-export const BASE_HERO = {
-  type: 'hero',
-  h: 10,
-  w: 10,
-  x: 0,
-  y: 0,
-  dx: 0.35,
-  dy: 0,
-  maxForce: 15,
-  force: (d) => d + 3,
-  accel: (d) => d - 1.8,
-  isJumping: false,
-  hasClimaxed: false,
 };
 
 import { level1 } from './maps/main';

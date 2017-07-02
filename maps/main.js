@@ -1,8 +1,9 @@
-import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../index';
+import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
 
 export function level1() {
   return {
     map: [
+      ...clouds(100, 0, 3000, 150, 300, { color: '#dfdfdf', h: 10 }),
       Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
       Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
       Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),

@@ -1,4 +1,4 @@
-import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../index';
+import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
 
 export function ladder() {
   return {
