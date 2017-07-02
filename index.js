@@ -23,7 +23,7 @@ function drawVectors(ctx, data, boxes) {
     const vx = r.dx * 50;
     const vy = r.dy * 50;
     ctx.moveTo(cx, cy);
-    ctx.lineTo(cx - vx, cy - vy);
+    ctx.lineTo(cx + vx, cy - vy);
     ctx.stroke();
   });
 }
@@ -182,12 +182,13 @@ function draw(canvas, ctx, data, lastFrame) {
   handleCollisions(data, collisions);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBoxes(ctx, data, data.map);
-  drawScore(ctx, data);
 
   if (data.config.showGhosts) {
     drawGhosts(ctx, data, data.map);
   }
+
+  drawBoxes(ctx, data, data.map);
+  drawScore(ctx, data);
 
   if (data.config.drawHitbox) {
     drawHitbox(ctx, data, collisions);
@@ -241,7 +242,7 @@ const levels = {
 };
 
 function initalizeGame() {
-  const { config, map } = levels.thinGap();
+  const { config, map } = levels.fallTest();
 
   return {
     canvas: {
