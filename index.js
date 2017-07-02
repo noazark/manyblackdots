@@ -108,9 +108,11 @@ function draw(canvas, ctx, data, lastFrame) {
     frame.dt = 0;
   }
 
-  if (data.state.isPlaying) {
+  if (data.state.isPlaying && data.state.isAlive) {
     window.requestAnimationFrame(() => draw(canvas, ctx, data, frame));
+  }
 
+  if (data.state.isPlaying) {
     moveHero(data, frame, frame);
 
     const collisions = detectCollision(data, data.map);
