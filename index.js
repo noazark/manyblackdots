@@ -1,4 +1,3 @@
-
 function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
@@ -194,7 +193,7 @@ canvas.style.width = `${data.canvas.w}px`;
 canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2, 2);
 
-function handlePress(e) {
+function handlePress() {
   if (data.state.isPlaying && !isJumping(data)) {
     data.state.up = true;
   }
