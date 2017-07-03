@@ -27,7 +27,7 @@ export function fallTest() {
         dx: 0
       }),
       Object.assign({}, BASE_PLATFORM, { x: 15 * i - 1, y: 110, w: 12 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 15 * i - 1, y: -999, w: 12, h: 999 + 50 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 15 * i - 1, y: -999, w: 12, h: 999 + 100 }),
     ]);
   }
 
@@ -71,7 +71,7 @@ export function jump() {
       }
     },
     map: [
-      Object.assign({}, BASE_HERO, { x: 30, y: 1, dy: 2 }),
+      Object.assign({}, BASE_HERO, { x: 30, y: 1, dy: 0.02 }),
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
       Object.assign({}, BASE_OBSTACLE, { x: 50, y: 0, w: 50, h: 50 }),
       Object.assign({}, BASE_OBSTACLE, { x: 300, y: 0, w: 50, h: 9999 }),
@@ -129,8 +129,8 @@ export function thinGap() {
       ...mapItems,
       Object.assign({}, BASE_HERO, {
         x: 30,
-        y: 51,
-        dx: 3
+        y: 52,
+        dx: 0.1
       }),
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: 0, w: 99999, h: 10 }),
     ]

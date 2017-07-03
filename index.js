@@ -151,7 +151,6 @@ function handleCollisions(data, collisions) {
     if (collision.type === 'platform') {
       hero.y = collision.y + collision.h;
       hero.dy = 0;
-      hero.hasClimaxed = false;
     } else if (collision.type === 'obstacle') {
       data.state.isAlive = false;
     }
