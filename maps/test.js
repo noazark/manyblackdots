@@ -14,6 +14,8 @@ export function ladder() {
 }
 
 // Demonstrates issus with collision detection on moving objects
+//
+// All platforms and obstacles should be at least 1 pixel wider than hero
 export function fallTest() {
   let mapItems = [];
 
@@ -21,15 +23,11 @@ export function fallTest() {
     mapItems = mapItems.concat([
       Object.assign({}, BASE_HERO, {
         x: 15 * i,
-        y: 250 + 20 * i,
-        forceMax: 2,
-        accel() {
-          return { dy: this.dy - 0.15, dx: 0 };
-        },
+        y: 180 + 20 * i,
         dx: 0
       }),
-      Object.assign({}, BASE_PLATFORM, { x: 15 * i, y: 110, w: 10 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 15 * i, y: 50, w: 10, h: 50 }),
+      Object.assign({}, BASE_PLATFORM, { x: 15 * i - 1, y: 110, w: 12 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 15 * i - 1, y: -999, w: 12, h: 999 + 50 }),
     ]);
   }
 
