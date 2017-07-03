@@ -1,4 +1,4 @@
-import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
+import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
 
 export function ladder() {
   return {
@@ -64,18 +64,22 @@ export function verticalPlatform() {
 }
 
 export function jump() {
+  const obstacles = [];
+
+  for (let i=0; i < 30; i++) {
+    obstacles.push(Object.assign({}, BASE_OBSTACLE, { x: 200 + 300 * i, y: 0, w: 10, h: 10 * i + 1 }));
+  }
+
   return {
-    config: {
-      cameraX() {
-        return 0;
-      }
-    },
     map: [
-      Object.assign({}, BASE_HERO, { x: 30, y: 1, dy: 0.02 }),
-      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 50, y: 0, w: 50, h: 50 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 300, y: 0, w: 50, h: 9999 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -10, w: 99999, h: 0 }),
+      Object.assign({}, BASE_HERO, {
+        x: 30,
+        y: 1,
+        accel: cosThrottle(150)
+      }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 99999 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
+      ...obstacles,
     ]
   };
 }

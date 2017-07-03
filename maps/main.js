@@ -8,7 +8,7 @@ export function level1() {
       Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
       Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
       Object.assign({}, BASE_PLATFORM, { w: 100, x: 200, y: 40 }),
-      Object.assign({}, BASE_PLATFORM, { w: 500, x: 450, y: 40 }),
+      Object.assign({}, BASE_PLATFORM, { w: 500, x: 400, y: 40 }),
       Object.assign({}, BASE_PLATFORM, { w: 50, x: 1000, y: 40 }),
       Object.assign({}, BASE_PLATFORM, { w: 50, x: 1150, y: 40 }),
       Object.assign({}, BASE_PLATFORM, { w: 50, x: 1300, y: 40 }),
