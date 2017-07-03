@@ -76,6 +76,10 @@ document.addEventListener('touchend', handleRelease);
 document.addEventListener('keyup', handleRelease);
 
 const engine = new Loop((dt) => {
-  draw(canvas, ctx, data, { dt });
+  if (data.state.isPlaying) {
+    draw(canvas, ctx, data, { dt });
+  }
 });
 engine.start();
+
+draw(canvas, ctx, data, { dt: 0 });
