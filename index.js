@@ -38,13 +38,13 @@ function drawGhosts(ctx, data, boxes) {
 function getHitbox(a, b) {
   return {
     ax0: a.x,
-    bx0: b.x + b.w,
-    ax1: a.x + a.w - a.dx,
-    bx1: b.x - b.h,
+    ax1: a.x0,
     ay0: a.y,
+    ay1: a.y0,
+    bx0: b.x + b.w,
+    bx1: b.x,
     by0: b.y + b.h,
-    ay1: a.y + a.h - a.dy,
-    by1: b.y - b.h,
+    by1: b.y,
   };
 }
 
@@ -242,7 +242,8 @@ const levels = {
 };
 
 function initalizeGame() {
-  const { config, map } = levels.fallTest();
+  const level = window.location.hash.slice(1) || 'level1';
+  const { config, map } = levels[level]();
 
   return {
     canvas: {
