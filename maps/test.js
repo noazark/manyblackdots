@@ -140,3 +140,128 @@ export function thinGap() {
     ]
   };
 }
+
+export function chunkPads() {
+  let pads = [];
+
+  for (let i = 0; i < 50; i++) {
+    pads.push(Object.assign({}, BASE_PLATFORM, { x: 450 + 150 * i, y: 50, w: 100 - Number(i) }),);
+  }
+
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 450 }),
+      ...pads,
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 })
+    ]
+  };
+}
+
+export function chunkBedHop() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
+      Object.assign({}, BASE_PLATFORM, { x: 450, y: 50, w: 200 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 400, y: 0, w: 300, h: 20 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 })
+    ]
+  };
+}
+
+export function chunkTreeTrunk() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 450, y: 0, w: 20, h: 60 }),
+      Object.assign({}, BASE_PLATFORM, { x: 500, y: 100, w: 100 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 600, y: 30, w: 20, h: 150 }),
+      Object.assign({}, BASE_PLATFORM, { x: 620, y: 150, w: 100 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 700, y: 0, w: 20, h: 80 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 })
+    ]
+  };
+}
+
+export function chunkStairCase() {
+  // should probably make this more generic and just call it a "repeatable"
+  function stairs(config) {
+    const stairs = []
+
+    for (let i=1; i <= config.count; i++) {
+      const w = config.stepWidth
+      const x = config.x + w * i
+      const y = config.y
+      const h = config.stepHeight * i
+      const obstacleH = h - config.gap
+      const platformX = x - config.overhang
+
+      stairs.push(Object.assign({}, BASE_PLATFORM, { x: platformX, y: h, w }))
+      stairs.push(Object.assign({}, BASE_OBSTACLE, { x, y: 0, w, h: obstacleH }))
+    }
+
+    return stairs
+  }
+
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
+      ...stairs({
+        count: 4,
+        x: 450,
+        y: 0,
+        stepHeight: 30,
+        stepWidth: 150,
+        gap: 10,
+        overhang: 75
+      }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 })
+    ]
+  };
+}
+
+export function chunkTightLeap() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
+
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 400 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 450, y: 100, w: 20, h: 300 }),
+      Object.assign({}, BASE_PLATFORM, { x: 520, y: 0, w: 300 }),
+
+      Object.assign({}, BASE_OBSTACLE, { x: 840, y: 60, w: 20, h: 300 }),
+      Object.assign({}, BASE_PLATFORM, { x: 880, y: 0, w: 300 }),
+    ]
+  };
+}
+
+export function chunkFlamingDeath() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 500 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
+
+      Object.assign({}, BASE_OBSTACLE, { x: 290, y: 0, w: 20, h: 40 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 290, y: 80, w: 20, h: 300 }),
+    ]
+  };
+}
+
+export function chunkShortDrop() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 51 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 50, w: 250 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
+
+      Object.assign({}, BASE_OBSTACLE, { x: 290, y: 55, w: 20, h: 300 }),
+      Object.assign({}, BASE_PLATFORM, { x: 275, y: 10, w: 50 }),
+      Object.assign({}, BASE_PLATFORM, { x: 350, y: 80, w: 500 }),
+    ]
+  };
+}
