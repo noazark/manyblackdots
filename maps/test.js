@@ -142,10 +142,10 @@ export function thinGap() {
 }
 
 export function chunkPads() {
-  let pads = [];
+  const pads = [];
 
   for (let i = 0; i < 50; i++) {
-    pads.push(Object.assign({}, BASE_PLATFORM, { x: 450 + 150 * i, y: 50, w: 100 - Number(i) }),);
+    pads.push(Object.assign({}, BASE_PLATFORM, { x: 450 + 150 * i, y: 50, w: 100 - Number(i) }));
   }
 
   return {
@@ -188,21 +188,21 @@ export function chunkTreeTrunk() {
 export function chunkStairCase() {
   // should probably make this more generic and just call it a "repeatable"
   function stairs(config) {
-    const stairs = []
+    const stairs = [];
 
     for (let i=1; i <= config.count; i++) {
-      const w = config.stepWidth
-      const x = config.x + w * i
-      const y = config.y
-      const h = config.stepHeight * i
-      const obstacleH = h - config.gap
-      const platformX = x - config.overhang
+      const w = config.stepWidth;
+      const x = config.x + w * i;
+      const y = config.y;
+      const h = config.stepHeight * i;
+      const obstacleH = h - config.gap;
+      const platformX = x - config.overhang;
 
-      stairs.push(Object.assign({}, BASE_PLATFORM, { x: platformX, y: h, w }))
-      stairs.push(Object.assign({}, BASE_OBSTACLE, { x, y: 0, w, h: obstacleH }))
+      stairs.push(Object.assign({}, BASE_PLATFORM, { x: platformX, y: h, w }));
+      stairs.push(Object.assign({}, BASE_OBSTACLE, { x, y: 0, w, h: obstacleH }));
     }
 
-    return stairs
+    return stairs;
   }
 
   return {
