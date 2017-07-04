@@ -260,8 +260,25 @@ export function chunkShortDrop() {
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
       Object.assign({}, BASE_OBSTACLE, { x: 290, y: 55, w: 20, h: 300 }),
+      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 400, y: 100, w: 400, h: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 275, y: 10, w: 50 }),
       Object.assign({}, BASE_PLATFORM, { x: 350, y: 80, w: 500 }),
+    ]
+  };
+}
+
+export function chunkWallGap() {
+  return {
+    map: [
+      Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 1500 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
+
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 82, w: 900 }),
+      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 0, y: 70, w: 400, h: 10 }),
+      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 500, y: 70, w: 400, h: 10 }),
+      Object.assign({}, BASE_PLATFORM, { x: 1000, y: 82, w: 500 }),
+      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 1000, y: 70, w: 500, h: 10 }),
     ]
   };
 }
