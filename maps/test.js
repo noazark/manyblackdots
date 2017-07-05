@@ -230,10 +230,10 @@ export function chunkTightLeap() {
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 400 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 450, y: 100, w: 20, h: 300 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 450, y: 120, w: 20, h: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 520, y: 0, w: 300 }),
 
-      Object.assign({}, BASE_OBSTACLE, { x: 840, y: 60, w: 20, h: 300 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 840, y: 80, w: 20, h: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 880, y: 0, w: 300 }),
     ]
   };
