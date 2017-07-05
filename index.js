@@ -12,7 +12,7 @@ const BASE_CONFIG = {
 };
 
 import * as mainLevels from './maps/main';
-import * as testLevels from './maps/test';
+import * as testLevels from './maps/tests';
 
 const levels = {};
 Object.assign(levels, mainLevels, testLevels);
