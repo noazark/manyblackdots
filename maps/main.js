@@ -3,7 +3,7 @@ import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-to
 export function level1() {
   return {
     map: [
-      ...clouds(100, 0, 3000, 150, 300, { color: '#dfdfdf', h: 10 }),
+      ...clouds(100, 0, 3000, 150, 300, { color: '#dfdfdf' }),
       Object.assign({}, BASE_HERO, { x: 30, y: 2 }),
       Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
       Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
@@ -17,8 +17,8 @@ export function level1() {
       Object.assign({}, BASE_PLATFORM, { w: 200, x: 2150, y: 160 }),
       Object.assign({}, BASE_PLATFORM, { w: 300, x: 2530, y: 70 }),
       Object.assign({}, BASE_PLATFORM, { w: 150, x: 2610, y: 120 }),
-      Object.assign({}, BASE_OBSTACLE, { w: 20, h: 1000, x: 2860, y: 200 }),
-      Object.assign({}, BASE_PLATFORM, { w: 200, x: 2980, y: 180 }),
+      Object.assign({}, BASE_OBSTACLE, { w: 20, y: 190, h: 1000, x: 2860 }),
+      Object.assign({}, BASE_PLATFORM, { w: 200, x: 2950, y: 160 }),
     ]
   };
 }
