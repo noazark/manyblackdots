@@ -1,4 +1,4 @@
-import { isJumping, start, draw } from './lib/engine';
+import { isJumping, draw, moveHero } from './lib/engine';
 import { Loop } from './lib/loop';
 
 const BASE_CONFIG = {
@@ -28,7 +28,6 @@ function initalizeGame() {
     state: {
       offset: 0,
       isAlive: true,
-      isPlaying: false,
       up: false,
       down: false,
       left: false,
@@ -39,10 +38,15 @@ function initalizeGame() {
   };
 }
 
+let data = initalizeGame();
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let data = initalizeGame();
+const engine = new Loop((dt) => {
+  moveHero(data, { dt });
+  draw(canvas, ctx, data);
+});
+
 
 // retina bloating
 canvas.width = data.canvas.w * 2;
@@ -52,7 +56,7 @@ canvas.style.height = `${data.canvas.h}px`;
 ctx.scale(2, 2);
 
 function handlePress() {
-  if (data.state.isPlaying && !isJumping(data)) {
+  if (!isJumping(data)) {
     data.state.up = true;
   }
 
@@ -60,8 +64,8 @@ function handlePress() {
     data = initalizeGame();
   }
 
-  if (!data.state.isPlaying) {
-    start(canvas, ctx, data);
+  if (!engine.running) {
+    engine.start();
   }
 }
 
@@ -74,11 +78,4 @@ document.addEventListener('keydown', handlePress);
 document.addEventListener('touchend', handleRelease);
 document.addEventListener('keyup', handleRelease);
 
-const engine = new Loop((dt) => {
-  if (data.state.isPlaying) {
-    draw(canvas, ctx, data, { dt });
-  }
-});
-engine.start();
-
-draw(canvas, ctx, data, { dt: 0 });
+engine.tick();
