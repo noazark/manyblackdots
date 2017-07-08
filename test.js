@@ -15,7 +15,7 @@ describe('collision', () => {
     const q1 = { x: 0, y: 10 };
     const p2 = { x: 0, y: 0 };
     const q2 = { x: 10, y: 10 };
-    expect(intersects(p1, q1, p2, q2)).toBeTruthy();
+    expect(intersects(p1, q1, p2, q2)).toEqual({ dx: -5, dy: 5, x: 5, y: 5, p1, q1, p2, q2 });
   });
 
   it('non-intersecting', () => {

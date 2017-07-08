@@ -1,4 +1,4 @@
-import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
+import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '../lib/build-tools';
 
 export function ladder() {
   return {
@@ -19,15 +19,15 @@ export function ladder() {
 export function fallTest() {
   let mapItems = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 1; i++) {
     mapItems = mapItems.concat([
       Object.assign({}, BASE_HERO, {
         x: 15 * i,
         y: 180 + 20 * i,
         dx: 0
       }),
-      Object.assign({}, BASE_PLATFORM, { x: 15 * i - 1, y: 110, w: 12 }),
-      Object.assign({}, BASE_OBSTACLE, { x: 15 * i - 1, y: -999, w: 12, h: 999 + 100 }),
+      Object.assign({}, BASE_PLATFORM, { x: 15 * i - 2, y: 110, w: 14 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 15 * i - 2, y: -999, w: 14, h: 999 + 100 }),
     ]);
   }
 
@@ -260,7 +260,7 @@ export function chunkShortDrop() {
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
       Object.assign({}, BASE_OBSTACLE, { x: 290, y: 55, w: 20, h: 300 }),
-      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 400, y: 100, w: 400, h: 300 }),
+      Object.assign({}, BASE_WALL, { x: 400, y: 150, w: 400, h: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 275, y: 10, w: 50 }),
       Object.assign({}, BASE_PLATFORM, { x: 350, y: 80, w: 500 }),
     ]
@@ -274,11 +274,11 @@ export function chunkWallGap() {
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 1500 }),
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
-      Object.assign({}, BASE_PLATFORM, { x: 0, y: 82, w: 900 }),
-      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 0, y: 70, w: 400, h: 10 }),
-      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 500, y: 70, w: 400, h: 10 }),
-      Object.assign({}, BASE_PLATFORM, { x: 1000, y: 82, w: 500 }),
-      Object.assign({}, BASE_OBSTACLE, { type: 'wall', x: 1000, y: 70, w: 500, h: 10 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 80, w: 900 }),
+      Object.assign({}, BASE_WALL, { x: 0, y: 70, w: 400, h: 10 }),
+      Object.assign({}, BASE_WALL, { x: 500, y: 70, w: 400, h: 10 }),
+      Object.assign({}, BASE_PLATFORM, { x: 1000, y: 80, w: 500 }),
+      Object.assign({}, BASE_WALL, { x: 1000, y: 70, w: 500, h: 10 }),
     ]
   };
 }

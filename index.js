@@ -5,10 +5,9 @@ const BASE_CONFIG = {
   cameraX: (d) => {
     return d.map.find((el) => el.type === 'hero').x - 30;
   },
-  showCollisions: true,
-  showVectors: true,
-  showGhosts: true,
-  drawHitbox: true,
+  showCollisions: false,
+  showVectors: false,
+  showGhosts: false,
 };
 
 import * as mainLevels from './maps/main';
