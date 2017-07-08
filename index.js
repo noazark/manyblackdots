@@ -45,6 +45,10 @@ const ctx = canvas.getContext("2d");
 const engine = new Loop((dt) => {
   moveHero(data, { dt });
   draw(canvas, ctx, data);
+
+  if (!data.state.isAlive) {
+    engine.stop();
+  }
 });
 
 
