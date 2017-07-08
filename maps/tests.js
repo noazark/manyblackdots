@@ -260,9 +260,9 @@ export function chunkShortDrop() {
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
       Object.assign({}, BASE_OBSTACLE, { x: 290, y: 55, w: 20, h: 300 }),
-      Object.assign({}, BASE_WALL, { x: 400, y: 150, w: 400, h: 300 }),
+      Object.assign({}, BASE_WALL, { x: 450, y: 80, w: 10, h: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 275, y: 10, w: 50 }),
-      Object.assign({}, BASE_PLATFORM, { x: 350, y: 80, w: 500 }),
+      Object.assign({}, BASE_PLATFORM, { x: 400, y: 80, w: 500 }),
     ]
   };
 }
