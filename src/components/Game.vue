@@ -124,7 +124,7 @@ export default {
     ]),
 
     reset() {
-      this.initializeGame(levels[this.level]())
+      this.initializeGame(levels[this.level])
     }
   }
 }
