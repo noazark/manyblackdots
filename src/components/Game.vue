@@ -1,9 +1,8 @@
 <template>
   <div class="game">
-    <select v-model="level">
+    <select class="level-select" v-model="level">
       <option :value="v" v-for="k,v in levels">{{v}}</option>
     </select>
-    <a href="" @click.prevent="reset">reset</a>
     <canvas ref="canvas"></canvas>
     <pre>{{dat.config.description}}</pre>
   </div>
@@ -133,6 +132,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+*:focus {
+    outline: none;
+}
+
 h1, h2 {
   font-weight: normal;
 }
@@ -149,5 +152,14 @@ li {
 
 a {
   color: #42b983;
+}
+
+.level-select {
+  appearance: none;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-family: monospace;
+  margin-bottom: .5rem;
 }
 </style>
