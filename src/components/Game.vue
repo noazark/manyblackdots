@@ -93,7 +93,6 @@ export default {
 
     const handlePress = (e) => {
       e.preventDefault()
-      e.stopPropagation()
 
       if (this.dat && !this.dat.state.isAlive) {
         this.reset()
@@ -107,7 +106,6 @@ export default {
 
     const handleRelease = (e) => {
       e.preventDefault()
-      e.stopPropagation()
 
       this.handleRelease()
     }
