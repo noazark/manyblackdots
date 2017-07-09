@@ -54,6 +54,23 @@ function initalizeGame(level) {
 }
 let data = {};
 
+function prepareCanvas(data, canvas) {
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = data.canvas.w * 2;
+  canvas.height = data.canvas.h * 2;
+  canvas.style.width = `${data.canvas.w}px`;
+  canvas.style.height = `${data.canvas.h}px`;
+  ctx.scale(2, 2);
+
+  return ctx
+}
+
+function flush(canvas, ctx, buffer) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(buffer, 0, 0, canvas.width/2, canvas.height/2);
+}
+
 export default {
   data () {
     return {
@@ -72,24 +89,21 @@ export default {
   },
 
   mounted() {
+    const canvasBuffer = document.createElement('canvas');
+    const ctxBuffer = prepareCanvas(data, canvasBuffer)
+
     const canvas = this.$refs.canvas;
-    const ctx = canvas.getContext("2d");
+    const ctx = prepareCanvas(data, canvas);
 
     const engine = new Loop((dt) => {
       moveHero(data, { dt });
-      draw(canvas, ctx, data);
+      draw(canvasBuffer, ctxBuffer, data);
+      flush(canvas, ctx, canvasBuffer)
 
       if (!data.state.isAlive) {
         engine.stop();
       }
     });
-
-    // retina bloating
-    canvas.width = data.canvas.w * 2;
-    canvas.height = data.canvas.h * 2;
-    canvas.style.width = `${data.canvas.w}px`;
-    canvas.style.height = `${data.canvas.h}px`;
-    ctx.scale(2, 2);
 
     function handlePress() {
       if (!isJumping(data)) {
@@ -100,7 +114,8 @@ export default {
         data = initalizeGame(this.level);
 
         moveHero(data, { dt: 0 });
-        draw(canvas, ctx, data);
+        draw(canvasBuffer, ctxBuffer, data);
+        flush(canvas, ctx, canvasBuffer)
       } else if (!engine.running) {
         engine.start();
       }
