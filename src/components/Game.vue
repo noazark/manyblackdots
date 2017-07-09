@@ -106,10 +106,6 @@ export default {
     });
 
     function handlePress() {
-      if (!isJumping(data)) {
-        data.state.up = true;
-      }
-
       if (!data.state.isAlive) {
         data = initalizeGame(this.level);
 
@@ -118,6 +114,10 @@ export default {
         flush(canvas, ctx, canvasBuffer)
       } else if (!engine.running) {
         engine.start();
+      }
+
+      if (!isJumping(data)) {
+        data.state.up = true;
       }
     }
 
