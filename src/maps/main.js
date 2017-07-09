@@ -1,8 +1,5 @@
 import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '@/lib/build-tools';
-
-function strip(str) {
-  return str[0].replace(/^(\W+|\n)/gm, '')
-}
+import { strip } from '@/utils/string'
 
 export function level1() {
   return {

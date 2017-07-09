@@ -1,4 +1,5 @@
 import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '@/lib/build-tools';
+import { strip } from '@/utils/string'
 
 export function ladder() {
   return {
@@ -13,9 +14,6 @@ export function ladder() {
   };
 }
 
-// Demonstrates issus with collision detection on moving objects
-//
-// All platforms and obstacles should be at least 1 pixel wider than hero
 export function fallTest() {
   let mapItems = [];
 
@@ -33,7 +31,12 @@ export function fallTest() {
 
   return {
     config: {
-      showCollisions: true
+      showCollisions: true,
+      description: strip`
+        demonstrates issues with collision
+        detection around two near collidables
+
+        play a few times to see the various responses`
     },
     map: [
       ...mapItems
@@ -41,9 +44,12 @@ export function fallTest() {
   };
 }
 
-// Platforms do not handle horizontal collisions very well
 export function verticalPlatform() {
   return {
+    config: {
+      description: strip`
+        Platforms do not handle horizontal collisions very well`
+    },
     map: [
       Object.assign({}, BASE_HERO, {
         x: 30,
@@ -79,14 +85,17 @@ export function jump() {
 
 export function impossiblePlatform() {
   return {
+    config: {
+      description: strip`
+      this platform shouldn't be reachable
+      `
+    },
     map: [
-      Object.assign({}, BASE_PLATFORM, { x: 0, y: 50, w: 300 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
 
-      Object.assign({}, BASE_HERO, { x: 70, y: 51, dx: 0 }),
-      Object.assign({}, BASE_PLATFORM, { x: 0, y: 92, w: 150 }),
-      // this platform should not be reachable
-      Object.assign({}, BASE_HERO, { x: 220, y: 51, dx: 0 }),
-      Object.assign({}, BASE_PLATFORM, { x: 150, y: 91, w: 150 }),
+      Object.assign({}, BASE_HERO, { x: 30, y: 1, dx: 0 }),
+      Object.assign({}, BASE_PLATFORM, { x: 0, y: 140, w: 150 }),
+      Object.assign({}, BASE_OBSTACLE, { x: 0, y: 270, w: 150, h: 20 }),
     ]
   };
 }
