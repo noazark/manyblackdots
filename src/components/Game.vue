@@ -5,75 +5,40 @@
     </select>
     <a href="" @click.prevent="reset">reset</a>
     <canvas ref="canvas"></canvas>
-    <p>
-      press any button to begin
-      <br>
-      press any button to jump
-    </p>
+    <pre>{{dat.config.description}}</pre>
   </div>
 </template>
 
 <script>
-import { isJumping, draw, move } from '@/lib/engine';
+import Worker from  'worker-loader!@/worker';
+import { isJumping, draw, flush, prepareCanvas } from '@/lib/engine';
 import { Loop } from '@/lib/loop';
 import * as mainLevels from '@/maps/main';
 import * as testLevels from '@/maps/tests';
 
-const BASE_CONFIG = {
-  cameraX: -30,
-  showCollisions: true,
-  showVectors: false,
-  showGhosts: false,
-};
+const levels = Object.assign({}, mainLevels, testLevels);
+const worker = new Worker()
 
+function mapWorker(worker, events) {
+  const ret = {}
 
-const levels = {};
-Object.assign(levels, mainLevels, testLevels);
+  events.forEach((event) => {
+    ret[event] = function (...args) {
+      worker.postMessage({event, args: args})
+    }
+  })
 
-function initalizeGame(level) {
-  const { config, map } = levels[level]();
-
-  return {
-    canvas: {
-      h: 300,
-      w: 300
-    },
-    state: {
-      offset: 0,
-      isAlive: true,
-      up: false,
-      down: false,
-      left: false,
-      right: false,
-    },
-    config: Object.assign({}, BASE_CONFIG, config),
-    map,
-  };
-}
-let data = {};
-
-function prepareCanvas(data, canvas) {
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = data.canvas.w * 2;
-  canvas.height = data.canvas.h * 2;
-  canvas.style.width = `${data.canvas.w}px`;
-  canvas.style.height = `${data.canvas.h}px`;
-  ctx.scale(2, 2);
-
-  return ctx
-}
-
-function flush(canvas, ctx, buffer) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(buffer, 0, 0, canvas.width/2, canvas.height/2);
+  return ret
 }
 
 export default {
   data () {
     return {
       levels,
-      level: 'level1'
+      level: 'level1',
+      dat: {
+        config: {}
+      }
     }
   },
 
@@ -86,55 +51,77 @@ export default {
     }
   },
 
+  destroyed() {
+    worker.terminate();
+  },
+
   mounted() {
     const canvasBuffer = document.createElement('canvas');
-    const ctxBuffer = prepareCanvas(data, canvasBuffer)
+    let ctxBuffer
 
     const canvas = this.$refs.canvas;
-    const ctx = prepareCanvas(data, canvas);
+    let ctx
 
     const engine = new Loop((dt) => {
-      move(data, { dt });
-      draw(canvasBuffer, ctxBuffer, data);
-      flush(canvas, ctx, canvasBuffer)
-
-      if (!data.state.isAlive) {
-        engine.stop();
-      }
+      this.requestFrame({dt})
     });
 
-    function handlePress() {
-      if (!data.state.isAlive) {
-        data = initalizeGame(this.level);
+    const draw_ = (response) => {
+      this.dat = response
+      draw(canvasBuffer, ctxBuffer, response);
+      flush(canvas, ctx, canvasBuffer)
 
-        move(data, { dt: 0 });
-        draw(canvasBuffer, ctxBuffer, data);
-        flush(canvas, ctx, canvasBuffer)
+      if (!response.state.isAlive) {
+        engine.stop();
+      }
+    }
+
+    worker.onmessage = (e) => {
+      const {event, response} = e.data
+
+      if (event === 'requestFrame') {
+        draw_(response)
+      }
+
+      if (event === 'initializeGame') {
+        ctxBuffer = prepareCanvas(response, canvasBuffer)
+        ctx = prepareCanvas(response, canvas)
+
+        draw_(response)
+      }
+    }
+
+    const handlePress = () => {
+      if (this.dat && !this.dat.state.isAlive) {
+        this.reset()
+        this.requestFrame({dt: 0})
       } else if (!engine.running) {
         engine.start();
       }
 
-      if (!isJumping(data)) {
-        data.state.up = true;
-      }
+      this.handlePress()
     }
 
-    function handleRelease() {
-      data.state.up = false;
+    const handleRelease = () => {
+      this.handleRelease()
     }
 
-    document.addEventListener('touchstart', handlePress.bind(this));
-    document.addEventListener('keydown', handlePress.bind(this));
-    document.addEventListener('touchend', handleRelease.bind(this));
-    document.addEventListener('keyup', handleRelease.bind(this));
-
-    engine.tick();
-    engine.stop();
+    document.addEventListener('touchstart', handlePress);
+    document.addEventListener('keydown', handlePress);
+    document.addEventListener('touchend', handleRelease);
+    document.addEventListener('keyup', handleRelease);
   },
 
   methods: {
+    ...mapWorker(worker, [
+      'initializeGame',
+      'requestFrame',
+      'handleRelease',
+      'handlePress'
+    ]),
+
     reset() {
-      data = initalizeGame(this.level)
+      this.initializeGame(levels[this.level]())
     }
   }
 }

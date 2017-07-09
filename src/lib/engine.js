@@ -10,6 +10,23 @@ function cameraX(data) {
   return data.map.find((el) => el.type === 'hero').x + data.config.cameraX;
 }
 
+export function prepareCanvas(data, canvas) {
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = data.canvas.w * 2;
+  canvas.height = data.canvas.h * 2;
+  canvas.style.width = `${data.canvas.w}px`;
+  canvas.style.height = `${data.canvas.h}px`;
+  ctx.scale(2, 2);
+
+  return ctx
+}
+
+export function flush(canvas, ctx, buffer) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(buffer, 0, 0, canvas.width/2, canvas.height/2);
+}
+
 function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
@@ -174,7 +191,7 @@ function _detectCollision(a, b) {
   return null;
 }
 
-function detectCollision(data, map) {
+export function detectCollision(data, map) {
   const collisions = [];
   const collidables = {
     heros: [],
@@ -242,7 +259,7 @@ function filterCollisions(collision) {
   return collisionDistance > 0.1;
 }
 
-function handleCollisions(data, collisions) {
+export function handleCollisions(data, collisions) {
   if (collisions && collisions.length === 0) {
     return;
   }
@@ -289,9 +306,6 @@ function handleCollisions(data, collisions) {
 
 export function draw(canvas, ctx, data) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const collisions = detectCollision(data, data.map);
-  handleCollisions(data, collisions);
 
   if (data.config.showGhosts) {
     drawGhosts(ctx, data, data.map);

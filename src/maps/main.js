@@ -1,7 +1,16 @@
 import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '@/lib/build-tools';
 
+function strip(str) {
+  return str[0].replace(/^(\W+|\n)/gm, '')
+}
+
 export function level1() {
   return {
+    config: {
+      description: strip`
+        press any button to begin
+        press any button to jump`,
+    },
     map: [
       ...clouds(100, 0, 3000, 150, 300, { color: '#dfdfdf' }),
       Object.assign({}, BASE_HERO, { x: 30, y: 1 }),

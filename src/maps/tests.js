@@ -33,9 +33,6 @@ export function fallTest() {
 
   return {
     config: {
-      cameraX() {
-        return 0;
-      },
       showCollisions: true
     },
     map: [
@@ -51,10 +48,7 @@ export function verticalPlatform() {
       Object.assign({}, BASE_HERO, {
         x: 30,
         y: 1,
-        dx: 0.3,
-        force() {
-          return 0;
-        }
+        dx: 0.3
       }),
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
       Object.assign({}, BASE_PLATFORM, { x: 200, y: 0, w: 1, h: 50 }),
@@ -84,32 +78,14 @@ export function jump() {
 }
 
 export function impossiblePlatform() {
-  function accel(data) {
-    if (data.state.up) {
-      return {
-        dy: this.dy + 0.057,
-        dx: 0
-      };
-    } else {
-      return {
-        dy: this.dy - 0.109,
-        dx: 0
-      };
-    }
-  }
   return {
-    config: {
-      cameraX() {
-        return 0;
-      },
-    },
     map: [
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 50, w: 300 }),
 
-      Object.assign({}, BASE_HERO, { x: 70, y: 51, dx: 0, accel }),
+      Object.assign({}, BASE_HERO, { x: 70, y: 51, dx: 0 }),
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 92, w: 150 }),
       // this platform should not be reachable
-      Object.assign({}, BASE_HERO, { x: 220, y: 51, dx: 0, accel }),
+      Object.assign({}, BASE_HERO, { x: 220, y: 51, dx: 0 }),
       Object.assign({}, BASE_PLATFORM, { x: 150, y: 91, w: 150 }),
     ]
   };
