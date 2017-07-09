@@ -112,6 +112,10 @@ export default {
       this.handleRelease()
     }
 
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault()
+    })
+
     document.addEventListener('touchstart', handlePress);
     document.addEventListener('keydown', handlePress);
     document.addEventListener('touchend', handleRelease);
