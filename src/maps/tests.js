@@ -1,4 +1,4 @@
-import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '@/lib/build-tools';
+import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '@/lib/build-tools';
 
 export function ladder() {
   return {
@@ -74,8 +74,7 @@ export function jump() {
     map: [
       Object.assign({}, BASE_HERO, {
         x: 30,
-        y: 1,
-        accel: cosThrottle(150)
+        y: 1
       }),
       Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 99999 }),
       Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),

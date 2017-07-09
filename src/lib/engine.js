@@ -6,6 +6,10 @@ function round(num) {
   return ~~ (0.5 + num)
 }
 
+function cameraX(data) {
+  return data.map.find((el) => el.type === 'hero').x + data.config.cameraX;
+}
+
 function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
@@ -18,14 +22,14 @@ function _drawRect(ctx, data, r) {
     ctx.fillStyle = 'red';
   }
 
-  ctx.fillRect(round(x - data.config.cameraX(data)), round(y), round(width), round(height));
+  ctx.fillRect(round(x - cameraX(data)), round(y), round(width), round(height));
 }
 
 function drawVectors(ctx, data, boxes) {
   boxes.forEach((r) => {
     ctx.strokeStyle = 'red';
     ctx.beginPath();
-    const cx = r.x - data.config.cameraX(data) + r.w / 2;
+    const cx = r.x - cameraX(data) + r.w / 2;
     const cy = data.canvas.h - r.y - r.h + r.h / 2;
 
     const vx = r.dx * 50;
@@ -39,7 +43,7 @@ function drawVectors(ctx, data, boxes) {
 function drawGhosts(ctx, data, boxes) {
   boxes.forEach((r) => {
     ctx.fillStyle = 'blue';
-    ctx.fillRect(r.x0 - data.config.cameraX(data), data.canvas.h - r.y0 - r.h, r.w, r.h);
+    ctx.fillRect(r.x0 - cameraX(data), data.canvas.h - r.y0 - r.h, r.w, r.h);
   });
 }
 
@@ -64,13 +68,61 @@ function drawGameOver(ctx, data) {
   ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
 }
 
+function noop () {
+  // noop
+}
+
+// A throttling function with a few rules:
+//
+// - You must start burn while on the floor (dy == 0)
+// - Burn starts when global state is up
+// - Burn ends after timer, or when parent hits floor (dy == 0)
+function throttle(name, burn=1000, burnFunc=noop) {
+  const _data = {};
+
+  return function _func(obj, data) {
+    const now = Date.now();
+    const burndownKey = `burndown`;
+    const timerKey = `timer`;
+
+    if (obj.dy === 0) {
+      clearTimeout(_data[timerKey]);
+      delete _data[burndownKey];
+    }
+
+    if (_data[burndownKey] == null) {
+      _data[burndownKey] = now + burn;
+    }
+
+    let burnRemaining = 0;
+
+    if (now <= _data[burndownKey]) {
+      burnRemaining = (_data[burndownKey] - now) / 1000;
+    }
+
+    return burnFunc.call(this, obj, data, burnRemaining);
+  };
+}
+
+const accel = throttle('accel', 500,
+  function (obj, data, burn) {
+    if (data.state.up && burn > 0) {
+      return {
+        dy: burn * 1.001,
+      };
+    } else {
+      return {
+        dy: obj.dy - 0.08,
+      };
+    }
+  }
+)
+
 export function move(data, frame) {
   const objs = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
 
   objs.forEach((obj) => {
-    if (obj.hasOwnProperty('accel')) {
-      Object.assign(obj, obj.accel(data));
-    }
+    Object.assign(obj, accel(obj, data));
 
     obj.x0 = obj.x;
     obj.y0 = obj.y;
@@ -137,9 +189,11 @@ function detectCollision(data, map) {
     return m;
   }, collidables);
 
-  map.forEach(o => {
-    o.inCollision = false;
-  });
+  if (data.config.showCollisions) {
+    map.forEach(o => {
+      o.inCollision = false;
+    });
+  }
 
   collidables.heros.forEach((a) => {
     collidables.static.forEach((o) => {
@@ -150,8 +204,11 @@ function detectCollision(data, map) {
       const collision = _detectCollision(a, o);
       if (collision) {
         const [intersection, side] = collision;
-        a.inCollision = true;
-        o.inCollision = true;
+
+        if (data.config.showCollisions) {
+          a.inCollision = true;
+          o.inCollision = true;
+        }
 
         collisions.push([a, o, intersection, side]);
       }

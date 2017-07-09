@@ -1,57 +1,5 @@
 import { PROP_STATIC, PROP_COLLIDABLE, PROP_KILLER } from './engine';
 
-function noop () {
-  // noop
-}
-
-// A throttling function with a few rules:
-//
-// - You must start burn while on the floor (dy == 0)
-// - Burn starts when global state is up
-// - Burn ends after timer, or when parent hits floor (dy == 0)
-export function throttle(name, burn=1000, burnFunc=noop) {
-  const _data = {};
-
-  return function _func(data) {
-    const now = Date.now();
-    const burndownKey = `burndown`;
-    const timerKey = `timer`;
-
-    if (this.dy === 0) {
-      clearTimeout(_data[timerKey]);
-      delete _data[burndownKey];
-    }
-
-    if (_data[burndownKey] == null) {
-      _data[burndownKey] = now + burn;
-    }
-
-    let burnRemaining = 0;
-
-    if (now <= _data[burndownKey]) {
-      burnRemaining = (_data[burndownKey] - now) / 1000;
-    }
-
-    return burnFunc.call(this, data, burnRemaining);
-  };
-}
-
-export function cosThrottle(burn) {
-  return throttle('accel', burn,
-    function (data, burn) {
-      const accel = {
-        dy: this.dy - 0.08,
-      };
-
-      if (data.state.up && burn > 0) {
-        accel.dy = this.dy + 0.04 + Math.cos(burn) * 0.05;
-      }
-
-      return accel;
-    }
-  );
-}
-
 export const SHAPE = {
   type: 'shape',
   properties: [PROP_STATIC],
@@ -90,20 +38,7 @@ export const BASE_HERO = Object.assign({}, SHAPE, {
   x0: 0,
   y0: 0,
   dx: 0.25,
-  dy: 0,
-  accel: throttle('accel', 500,
-    function (data, burn) {
-      if (data.state.up && burn > 0) {
-        return {
-          dy: burn * 1.001,
-        };
-      } else {
-        return {
-          dy: this.dy - 0.08,
-        };
-      }
-    }
-  )
+  dy: 0
 });
 
 export function clouds(count=10, xMin=0, xMax=100, yMin=0, yMax=100, config={}) {

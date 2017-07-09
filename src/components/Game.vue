@@ -20,10 +20,8 @@ import * as mainLevels from '@/maps/main';
 import * as testLevels from '@/maps/tests';
 
 const BASE_CONFIG = {
-  cameraX: (d) => {
-    return d.map.find((el) => el.type === 'hero').x - 30;
-  },
-  showCollisions: false,
+  cameraX: -30,
+  showCollisions: true,
   showVectors: false,
   showGhosts: false,
 };
