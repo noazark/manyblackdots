@@ -2,6 +2,10 @@ export const PROP_STATIC = 'static';
 export const PROP_COLLIDABLE = 'collideable';
 export const PROP_KILLER = 'killer';
 
+function round(num) {
+  return ~~ (0.5 + num)
+}
+
 function _drawRect(ctx, data, r) {
   const x = r.x;
   const y = data.canvas.h - r.y - r.h;
@@ -14,7 +18,7 @@ function _drawRect(ctx, data, r) {
     ctx.fillStyle = 'red';
   }
 
-  ctx.fillRect(x - data.config.cameraX(data), y, width, height);
+  ctx.fillRect(round(x - data.config.cameraX(data)), round(y), round(width), round(height));
 }
 
 function drawVectors(ctx, data, boxes) {
