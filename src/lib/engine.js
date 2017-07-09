@@ -60,19 +60,19 @@ function drawGameOver(ctx, data) {
   ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
 }
 
-export function moveHero(data, frame) {
-  const heros = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
+export function move(data, frame) {
+  const objs = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
 
-  heros.forEach((hero) => {
-    if (hero.hasOwnProperty('accel')) {
-      Object.assign(hero, hero.accel(data));
+  objs.forEach((obj) => {
+    if (obj.hasOwnProperty('accel')) {
+      Object.assign(obj, obj.accel(data));
     }
 
-    hero.x0 = hero.x;
-    hero.y0 = hero.y;
+    obj.x0 = obj.x;
+    obj.y0 = obj.y;
 
-    hero.x += frame.dt * hero.dx;
-    hero.y += frame.dt * hero.dy;
+    obj.x += frame.dt * obj.dx;
+    obj.y += frame.dt * obj.dy;
   });
 }
 

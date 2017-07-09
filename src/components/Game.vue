@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { isJumping, draw, moveHero } from '@/lib/engine';
+import { isJumping, draw, move } from '@/lib/engine';
 import { Loop } from '@/lib/loop';
 import * as mainLevels from '@/maps/main';
 import * as testLevels from '@/maps/tests';
@@ -96,7 +96,7 @@ export default {
     const ctx = prepareCanvas(data, canvas);
 
     const engine = new Loop((dt) => {
-      moveHero(data, { dt });
+      move(data, { dt });
       draw(canvasBuffer, ctxBuffer, data);
       flush(canvas, ctx, canvasBuffer)
 
@@ -113,7 +113,7 @@ export default {
       if (!data.state.isAlive) {
         data = initalizeGame(this.level);
 
-        moveHero(data, { dt: 0 });
+        move(data, { dt: 0 });
         draw(canvasBuffer, ctxBuffer, data);
         flush(canvas, ctx, canvasBuffer)
       } else if (!engine.running) {
