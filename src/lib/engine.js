@@ -61,7 +61,7 @@ function drawGameOver(ctx, data) {
 }
 
 export function moveHero(data, frame) {
-  const heros = data.map.filter((el) => !el.properties.includes(PROP_STATIC));
+  const heros = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
 
   heros.forEach((hero) => {
     if (hero.hasOwnProperty('accel')) {

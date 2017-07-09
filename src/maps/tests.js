@@ -1,4 +1,4 @@
-import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '../lib/build-tools';
+import { cosThrottle, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '@/lib/build-tools';
 
 export function ladder() {
   return {

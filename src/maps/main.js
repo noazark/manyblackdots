@@ -1,4 +1,4 @@
-import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '../lib/build-tools';
+import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM } from '@/lib/build-tools';
 
 export function level1() {
   return {
