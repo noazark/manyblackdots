@@ -3,6 +3,7 @@ import { strip } from '@/utils/string'
 
 export const level1 = {
   config: {
+    name: 'Level 1',
     description: strip`
       press any button to begin
       press any button to jump`,

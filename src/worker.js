@@ -1,13 +1,5 @@
 import {isJumping, move, detectCollision, handleCollisions} from '@/lib/engine'
 
-const BASE_CONFIG = {
-  description: '',
-  cameraX: -30,
-  showCollisions: false,
-  showVectors: false,
-  showGhosts: false,
-}
-
 let data = {}
 
 function requestFrame(frame) {
@@ -17,23 +9,8 @@ function requestFrame(frame) {
   return data
 }
 
-function initializeGame({ config, map }) {
-  data = {
-    canvas: {
-      h: 300,
-      w: 300
-    },
-    state: {
-      offset: 0,
-      isAlive: true,
-      up: false,
-      down: false,
-      left: false,
-      right: false,
-    },
-    config: Object.assign({}, BASE_CONFIG, config),
-    map,
-  }
+function loadGame(data_) {
+  data = data_
 
   return data
 }
@@ -48,7 +25,6 @@ function handleRelease() {
   data.state.up = false
 }
 
-
 onmessage = function(e) {
   let {event, args} = e.data
   let func
@@ -57,22 +33,13 @@ onmessage = function(e) {
     args = {}
   }
 
-  if (event === 'requestFrame') {
-    func = requestFrame
+  const handlers = {
+    requestFrame,
+    loadGame,
+    handlePress,
+    handleRelease
   }
 
-  if (event === 'initializeGame') {
-    func = initializeGame
-  }
-
-  if (event === 'handlePress') {
-    func = handlePress
-  }
-
-  if (event === 'handleRelease') {
-    func = handleRelease
-  }
-
-  const response = func(...args)
+  const response = handlers[event](...args)
   postMessage({event, response})
 }

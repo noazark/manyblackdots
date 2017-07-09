@@ -2,6 +2,41 @@ export const PROP_STATIC = 'static';
 export const PROP_COLLIDABLE = 'collideable';
 export const PROP_KILLER = 'killer';
 
+const BASE_CONFIG = {
+  name: '',
+  description: '',
+  cameraX: -30,
+  showCollisions: false,
+  showVectors: false,
+  showGhosts: false,
+}
+
+export function loadLevels(levels) {
+  for(let [k, v] of Object.entries(levels)) {
+    levels[k] = initializeLevel(v)
+  }
+  return levels
+}
+
+export function initializeLevel({ config, map }) {
+  return {
+    canvas: {
+      h: 300,
+      w: 300
+    },
+    state: {
+      offset: 0,
+      isAlive: true,
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+    },
+    config: Object.assign({}, BASE_CONFIG, config),
+    map,
+  }
+}
+
 function round(num) {
   return ~~ (0.5 + num)
 }

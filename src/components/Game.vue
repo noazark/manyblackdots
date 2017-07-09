@@ -1,7 +1,7 @@
 <template>
   <div class="game">
     <select class="level-select" v-model="level">
-      <option :value="v" v-for="k,v in levels">{{v}}</option>
+      <option :value="k" v-for="v,k in levels">{{v.config.name || k}}</option>
     </select>
     <canvas ref="canvas"></canvas>
     <pre>{{dat.config.description}}</pre>
@@ -10,12 +10,12 @@
 
 <script>
 import Worker from  'worker-loader!@/worker';
-import { isJumping, draw, flush, prepareCanvas } from '@/lib/engine';
+import { loadLevels, isJumping, draw, flush, prepareCanvas } from '@/lib/engine';
 import { Loop } from '@/lib/loop';
+import { level1 } from '@/maps/main';
 import * as mainLevels from '@/maps/main';
 import * as testLevels from '@/maps/tests';
 
-const levels = Object.assign({}, mainLevels, testLevels);
 const worker = new Worker()
 
 function mapWorker(worker, events) {
@@ -33,7 +33,10 @@ function mapWorker(worker, events) {
 export default {
   data () {
     return {
-      levels,
+      levels: loadLevels({
+        ...mainLevels,
+        ...testLevels
+      }),
       level: 'level1',
       dat: {
         config: {}
@@ -82,7 +85,7 @@ export default {
         draw_(response)
       }
 
-      if (event === 'initializeGame') {
+      if (event === 'loadGame') {
         ctxBuffer = prepareCanvas(response, canvasBuffer)
         ctx = prepareCanvas(response, canvas)
 
@@ -117,14 +120,14 @@ export default {
 
   methods: {
     ...mapWorker(worker, [
-      'initializeGame',
+      'loadGame',
       'requestFrame',
       'handleRelease',
       'handlePress'
     ]),
 
     reset() {
-      this.initializeGame(levels[this.level])
+      this.loadGame(this.levels[this.level])
     }
   }
 }
