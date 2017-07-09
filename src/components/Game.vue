@@ -92,8 +92,6 @@ export default {
     }
 
     const handlePress = (e) => {
-      e.preventDefault()
-
       if (this.dat && !this.dat.state.isAlive) {
         this.reset()
         this.requestFrame({dt: 0})
@@ -105,8 +103,6 @@ export default {
     }
 
     const handleRelease = (e) => {
-      e.preventDefault()
-
       this.handleRelease()
     }
 
