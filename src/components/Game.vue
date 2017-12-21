@@ -4,7 +4,9 @@
       <option :value="k" v-for="v,k in levels">{{v.config.name || k}}</option>
     </select>
     <canvas ref="canvas"></canvas>
-    <pre>{{dat.config.description}}</pre>
+    <pre v-if="dat.state.isWinner && dat.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
+    <pre v-else-if="dat.state.isWinner && !dat.config.nextLevel">Kill screen</pre>
+    <pre v-else>{{dat.config.description}}</pre>
   </div>
 </template>
 
@@ -39,7 +41,8 @@ export default {
       }),
       level: 'level1',
       dat: {
-        config: {}
+        config: {},
+        state: {}
       }
     }
   },
@@ -128,6 +131,13 @@ export default {
 
     reset() {
       this.loadGame(this.levels[this.level])
+    },
+
+    nextLevel() {
+      if (this.dat.config.nextLevel) {
+        this.level = this.dat.config.nextLevel
+        this.reset()
+      }
     }
   }
 }

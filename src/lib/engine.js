@@ -1,6 +1,7 @@
 export const PROP_STATIC = 'static';
 export const PROP_COLLIDABLE = 'collideable';
 export const PROP_KILLER = 'killer';
+export const PROP_WIN_ZONE = 'win-zone';
 
 const BASE_CONFIG = {
   name: '',
@@ -27,6 +28,7 @@ export function initializeLevel({ config, map }) {
     state: {
       offset: 0,
       isAlive: true,
+      isWinner: false,
       up: false,
       down: false,
       left: false,
@@ -120,6 +122,13 @@ function drawGameOver(ctx, data) {
   ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
 }
 
+function drawGameWon(ctx, data) {
+  ctx.fillStyle = '#efefef';
+  ctx.textAlign = 'center';
+  ctx.font = "24px monospace";
+  ctx.fillText('You Win!', data.canvas.w / 2, data.canvas.h / 2);
+}
+
 function noop () {
   // noop
 }
@@ -170,7 +179,19 @@ const accel = throttle('accel', 500,
   }
 )
 
+function atExtents(data) {
+  const extents = data.map.map((el) => el.x + el.w)
+  const furthestExtent = Math.max(...extents)
+  const hero = data.map.find((el) => el.type === 'hero')
+
+  return hero.x + hero.w + data.canvas.w >= furthestExtent
+}
+
 export function move(data, frame) {
+  if (atExtents(data)) {
+    return
+  }
+
   const objs = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
 
   objs.forEach((obj) => {
@@ -295,7 +316,7 @@ function filterCollisions(collision) {
 }
 
 export function handleCollisions(data, collisions) {
-  if (collisions && collisions.length === 0) {
+  if ((collisions && collisions.length === 0) || data.state.isWinner === true) {
     return;
   }
 
@@ -319,6 +340,10 @@ export function handleCollisions(data, collisions) {
 
     if (collision.properties.includes(PROP_KILLER)) {
       data.state.isAlive = false;
+    }
+
+    if (collision.properties.includes(PROP_WIN_ZONE)) {
+      data.state.isWinner = true;
     }
 
     if (collision.properties.includes(PROP_COLLIDABLE)) {
@@ -354,5 +379,9 @@ export function draw(canvas, ctx, data) {
 
   if (!data.state.isAlive) {
     drawGameOver(ctx, data);
+  }
+
+  if (data.state.isWinner) {
+    drawGameWon(ctx, data);
   }
 }

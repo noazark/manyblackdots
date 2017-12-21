@@ -1,4 +1,4 @@
-import { PROP_STATIC, PROP_COLLIDABLE, PROP_KILLER } from './engine';
+import { PROP_STATIC, PROP_COLLIDABLE, PROP_KILLER, PROP_WIN_ZONE } from './engine';
 
 export const SHAPE = {
   type: 'shape',
@@ -26,6 +26,12 @@ export const BASE_PLATFORM = Object.assign({}, SHAPE, {
   color: '#333333',
   properties: [PROP_STATIC, PROP_COLLIDABLE],
   h: 1
+});
+
+export const BASE_WIN_ZONE = Object.assign({}, SHAPE, {
+  type: 'win-zone',
+  color: '#454545',
+  properties: [PROP_STATIC, PROP_COLLIDABLE, PROP_WIN_ZONE]
 });
 
 export const BASE_HERO = Object.assign({}, SHAPE, {
