@@ -5,7 +5,6 @@
     </select>
     <canvas ref="canvas"></canvas>
     <pre v-if="dat.state.isWinner && dat.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
-    <pre v-else-if="dat.state.isWinner && !dat.config.nextLevel">Kill screen</pre>
     <pre v-else>{{dat.config.description}}</pre>
   </div>
 </template>

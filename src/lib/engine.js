@@ -126,7 +126,7 @@ function drawGameWon(ctx, data) {
   ctx.fillStyle = '#efefef';
   ctx.textAlign = 'center';
   ctx.font = "24px monospace";
-  ctx.fillText('You Win!', data.canvas.w / 2, data.canvas.h / 2);
+  ctx.fillText(data.config.nextLevel ? 'You Win!' : 'Kill Screen', data.canvas.w / 2, data.canvas.h / 2);
 }
 
 function noop () {
