@@ -11,6 +11,7 @@ set -o pipefail
 git config --global user.email "noah@batteredoats.com"
 
 git checkout -b deploy
+cat circle.yml > ./dist/circle.yml
 cat CNAME > ./dist/CNAME
 git add --all --force ./dist/
 git commit --message "Deploying $CIRCLE_SHA1"
