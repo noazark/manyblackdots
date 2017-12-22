@@ -18,6 +18,7 @@ import * as mainLevels from '@/maps/main';
 import * as testLevels from '@/maps/tests';
 
 const worker = new Worker()
+const engine = new Loop();
 
 function mapWorker(worker, events) {
   const ret = {}
@@ -60,18 +61,15 @@ export default {
   },
 
   mounted() {
-    const canvasBuffer = document.createElement('canvas');
+    const canvas = this.$refs.canvas;
+    const canvasBuffer = canvas.cloneNode();
+
+    let ctx
     let ctxBuffer
 
-    const canvas = this.$refs.canvas;
-    let ctx
-
-    const engine = new Loop((dt) => {
-      this.requestFrame({dt})
-    });
+    engine.events.addEventListener('tick', dt => this.requestFrame({dt}))
 
     const draw_ = (response) => {
-      this.dat = response
       draw(canvasBuffer, ctxBuffer, response);
       flush(canvas, ctx, canvasBuffer)
 
@@ -82,6 +80,10 @@ export default {
 
     worker.onmessage = (e) => {
       const {event, response} = e.data
+
+      if (response) {
+        this.dat = response
+      }
 
       if (event === 'requestFrame') {
         draw_(response)
@@ -110,10 +112,7 @@ export default {
       this.handleRelease()
     }
 
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault()
-    })
-
+    document.addEventListener('contextmenu', (e) => e.preventDefault())
     document.addEventListener('touchstart', handlePress);
     document.addEventListener('keydown', handlePress);
     document.addEventListener('touchend', handleRelease);
@@ -135,6 +134,7 @@ export default {
     nextLevel() {
       if (this.dat.config.nextLevel) {
         this.level = this.dat.config.nextLevel
+        engine.stop()
         this.reset()
       }
     }
