@@ -1,8 +1,9 @@
-import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL } from '@/lib/build-tools';
+import { BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WALL, CAMERA } from '@/lib/build-tools';
 import { strip } from '@/utils/string'
 
 export const ladder = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_OBSTACLE, { w: 99999, y: -100 }),
 
@@ -22,6 +23,7 @@ export const fallTest = {
       play a few times to see the various responses`
   },
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 2, y: 180, dx: 0}),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 110, w: 14 }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: -999, w: 14, h: 999 + 100 }),
@@ -34,6 +36,7 @@ export const verticalPlatform = {
       Platforms do not handle horizontal collisions very well`
   },
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, {
       x: 30,
       y: 1,
@@ -53,6 +56,7 @@ for (let i=0; i < 30; i++) {
 
 export const jump = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, {
       x: 30,
       y: 1
@@ -70,6 +74,7 @@ export const impossiblePlatform = {
     `
   },
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
 
     Object.assign({}, BASE_HERO, { x: 30, y: 1, dx: 0 }),
@@ -91,6 +96,7 @@ export const thinGap = {
     showCollisions: true
   },
   map: [
+    Object.assign({}, CAMERA),
     ...thinGapMapItems,
     Object.assign({}, BASE_HERO, {
       x: 30,
@@ -109,6 +115,7 @@ for (let i = 0; i < 50; i++) {
 
 export const chunkPads = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 450 }),
     ...chunkPadsMapItems,
@@ -118,6 +125,7 @@ export const chunkPads = {
 
 export const chunkBedHop = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
     Object.assign({}, BASE_PLATFORM, { x: 450, y: 50, w: 200 }),
@@ -128,6 +136,7 @@ export const chunkBedHop = {
 
 export const chunkTreeTrunk = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
     Object.assign({}, BASE_OBSTACLE, { x: 450, y: 0, w: 20, h: 60 }),
@@ -160,6 +169,7 @@ function stairs(config) {
 
 export const chunkStairCase = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 900 }),
     ...stairs({
@@ -177,6 +187,7 @@ export const chunkStairCase = {
 
 export const chunkTightLeap = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
 
@@ -191,6 +202,7 @@ export const chunkTightLeap = {
 
 export const chunkFlamingDeath = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 500 }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
@@ -202,6 +214,7 @@ export const chunkFlamingDeath = {
 
 export const chunkShortDrop = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 51 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 50, w: 250 }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),
@@ -215,6 +228,7 @@ export const chunkShortDrop = {
 
 export const chunkWallGap = {
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 1500 }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: -100, w: 99999, h: 0 }),

@@ -2,11 +2,11 @@ export const PROP_STATIC = 'static';
 export const PROP_COLLIDABLE = 'collideable';
 export const PROP_KILLER = 'killer';
 export const PROP_WIN_ZONE = 'win-zone';
+export const PROP_DRAWABLE = 'drawable';
 
 const BASE_CONFIG = {
   name: '',
   description: '',
-  cameraX: -30,
   showCollisions: false,
   showVectors: false,
   showGhosts: false,
@@ -20,23 +20,14 @@ export function loadLevels(levels) {
 }
 
 export function initializeLevel({ config, map }) {
-  return {
-    canvas: {
-      h: 300,
-      w: 300
-    },
-    state: {
-      offset: 0,
-      isAlive: true,
-      isWinner: false,
-      up: false,
-      down: false,
-      left: false,
-      right: false,
-    },
-    config: Object.assign({}, BASE_CONFIG, config),
+  const level = {
+    config: Object.freeze(Object.assign({}, BASE_CONFIG, config)),
     map,
   }
+
+  level.config = Object.freeze(level.config)
+
+  return level
 }
 
 function round(num) {
@@ -44,16 +35,18 @@ function round(num) {
 }
 
 function cameraX(data) {
-  return data.map.find((el) => el.type === 'hero').x + data.config.cameraX;
+  const camera = data.map.find((el) => el.type === 'camera')
+  return camera.x;
 }
 
 export function prepareCanvas(data, canvas) {
   const ctx = canvas.getContext('2d');
+  const camera = data.map.find((el) => el.type === 'camera')
 
-  canvas.width = data.canvas.w * 2;
-  canvas.height = data.canvas.h * 2;
-  canvas.style.width = `${data.canvas.w}px`;
-  canvas.style.height = `${data.canvas.h}px`;
+  canvas.width = camera.w * 2;
+  canvas.height = camera.h * 2;
+  canvas.style.width = `${camera.w}px`;
+  canvas.style.height = `${camera.h}px`;
   ctx.scale(2, 2);
 
   return ctx
@@ -65,8 +58,9 @@ export function flush(canvas, ctx, buffer) {
 }
 
 function _drawRect(ctx, data, r) {
+  const camera = data.map.find((el) => el.type === 'camera')
   const x = r.x;
-  const y = data.canvas.h - r.y - r.h;
+  const y = camera.h - r.y - r.h;
   const width = r.w;
   const height = r.h;
 
@@ -80,11 +74,12 @@ function _drawRect(ctx, data, r) {
 }
 
 function drawVectors(ctx, data, boxes) {
+  const camera = data.map.find((el) => el.type === 'camera')
   boxes.forEach((r) => {
     ctx.strokeStyle = 'red';
     ctx.beginPath();
     const cx = r.x - cameraX(data) + r.w / 2;
-    const cy = data.canvas.h - r.y - r.h + r.h / 2;
+    const cy = camera.h - r.y - r.h + r.h / 2;
 
     const vx = r.dx * 50;
     const vy = r.dy * 50;
@@ -95,9 +90,10 @@ function drawVectors(ctx, data, boxes) {
 }
 
 function drawGhosts(ctx, data, boxes) {
+  const camera = data.map.find((el) => el.type === 'camera')
   boxes.forEach((r) => {
     ctx.fillStyle = 'blue';
-    ctx.fillRect(r.x0 - cameraX(data), data.canvas.h - r.y0 - r.h, r.w, r.h);
+    ctx.fillRect(r.x0 - cameraX(data), camera.h - r.y0 - r.h, r.w, r.h);
   });
 }
 
@@ -111,22 +107,25 @@ function getRectVertices(a) {
   };
 }
 
-function drawBoxes(ctx, data, boxes) {
+function drawRects(ctx, data, boxes) {
   boxes.forEach((r) => _drawRect(ctx, data, r));
 }
 
 function drawGameOver(ctx, data) {
+  const camera = data.map.find((el) => el.type === 'camera')
+
   ctx.fillStyle = '#333333';
   ctx.textAlign = 'center';
   ctx.font = "24px monospace";
-  ctx.fillText('Game Over', data.canvas.w / 2, data.canvas.h / 2);
+  ctx.fillText('Game Over', camera.w / 2, camera.h / 2);
 }
 
 function drawGameWon(ctx, data) {
+  const camera = data.map.find((el) => el.type === 'camera')
   ctx.fillStyle = '#efefef';
   ctx.textAlign = 'center';
   ctx.font = "24px monospace";
-  ctx.fillText(data.config.nextLevel ? 'You Win!' : 'Kill Screen', data.canvas.w / 2, data.canvas.h / 2);
+  ctx.fillText(data.config.nextLevel ? 'You Win!' : 'Kill Screen', camera.w / 2, camera.h / 2);
 }
 
 function noop () {
@@ -180,29 +179,37 @@ const accel = throttle('accel', 500,
 )
 
 function atExtents(data) {
-  const extents = data.map.map((el) => el.x + el.w)
+  const extents = data.map.map((el) => el.properties.includes(PROP_STATIC) ? el.x + el.w : 0)
   const furthestExtent = Math.max(...extents)
-  const hero = data.map.find((el) => el.type === 'hero')
+  const camera = data.map.find((el) => el.type === 'camera')
 
-  return hero.x + hero.w + data.canvas.w >= furthestExtent
+  return camera.x + camera.w >= furthestExtent
 }
 
-export function move(data, frame) {
-  if (atExtents(data)) {
-    return
-  }
+export function move(data, state) {
+  data.state = {...data.state, ...state}
 
-  const objs = data.map.filter((el) => el.properties && !el.properties.includes(PROP_STATIC));
+  data.map = data.map.map((el) => {
+    const obj = Object.assign({}, el)
 
-  objs.forEach((obj) => {
-    Object.assign(obj, accel(obj, data));
+    if (obj.type === 'camera' && atExtents(data)) {
+      return obj
+    }
 
-    obj.x0 = obj.x;
-    obj.y0 = obj.y;
+    if (!obj.properties.includes(PROP_STATIC)) {
+      Object.assign(obj, accel(obj, data));
 
-    obj.x += frame.dt * obj.dx;
-    obj.y += frame.dt * obj.dy;
+      obj.x0 = el.x;
+      obj.y0 = el.y;
+
+      obj.x += state.dt * el.dx;
+      obj.y += state.dt * el.dy;
+    }
+
+    return obj
   });
+
+  return data
 }
 
 export function isJumping(data) {
@@ -317,7 +324,7 @@ function filterCollisions(collision) {
 
 export function handleCollisions(data, collisions) {
   if ((collisions && collisions.length === 0) || data.state.isWinner === true) {
-    return;
+    return data;
   }
 
   const closestCollision = collisions.sort(sortCollisions)[0];
@@ -362,6 +369,13 @@ export function handleCollisions(data, collisions) {
       }
     }
   });
+
+  return data
+}
+
+export function createFrame(data) {
+  // turn data into a single flat frame filled with objects to paint
+  return data
 }
 
 export function draw(canvas, ctx, data) {
@@ -371,7 +385,7 @@ export function draw(canvas, ctx, data) {
     drawGhosts(ctx, data, data.map);
   }
 
-  drawBoxes(ctx, data, data.map);
+  drawRects(ctx, data, data.map.filter((el) => el.properties.includes(PROP_DRAWABLE)));
 
   if (data.config.showVectors) {
     drawVectors(ctx, data, data.map);

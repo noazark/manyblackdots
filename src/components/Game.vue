@@ -4,14 +4,14 @@
       <option :value="k" v-for="v,k in levels">{{v.config.name || k}}</option>
     </select>
     <canvas ref="canvas"></canvas>
-    <pre v-if="dat.state.isWinner && dat.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
-    <pre v-else>{{dat.config.description}}</pre>
+    <pre v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
+    <pre v-else>{{currentLevel.config.description}}</pre>
   </div>
 </template>
 
 <script>
 import Worker from  'worker-loader!@/worker';
-import { loadLevels, isJumping, draw, flush, prepareCanvas } from '@/lib/engine';
+import { loadLevels, draw, flush, prepareCanvas } from '@/lib/engine';
 import { Loop } from '@/lib/loop';
 import { level1 } from '@/maps/main';
 import * as mainLevels from '@/maps/main';
@@ -40,9 +40,11 @@ export default {
         ...testLevels
       }),
       level: 'level1',
+      state: {
+        up: false
+      },
       dat: {
-        config: {},
-        state: {}
+        config: {}
       }
     }
   },
@@ -53,6 +55,12 @@ export default {
         this.reset()
       },
       immediate: true
+    }
+  },
+
+  computed: {
+    currentLevel() {
+      return this.levels[this.level]
     }
   },
 
@@ -67,7 +75,7 @@ export default {
     let ctx
     let ctxBuffer
 
-    engine.events.addEventListener('tick', dt => this.requestFrame({dt}))
+    engine.events.addEventListener('tick', dt => this.requestFrame({...this.state, dt}))
 
     const draw_ = (response) => {
       draw(canvasBuffer, ctxBuffer, response);
@@ -93,23 +101,22 @@ export default {
         ctxBuffer = prepareCanvas(response, canvasBuffer)
         ctx = prepareCanvas(response, canvas)
 
-        draw_(response)
+        this.requestFrame({...this.state, dt: 0})
       }
     }
 
     const handlePress = (e) => {
+      this.state.up = true
+
       if (this.dat && !this.dat.state.isAlive) {
         this.reset()
-        this.requestFrame({dt: 0})
       } else if (!engine.running) {
         engine.start();
       }
-
-      this.handlePress()
     }
 
     const handleRelease = (e) => {
-      this.handleRelease()
+      this.state.up = false
     }
 
     document.addEventListener('contextmenu', (e) => e.preventDefault())
@@ -123,18 +130,16 @@ export default {
     ...mapWorker(worker, [
       'loadGame',
       'requestFrame',
-      'handleRelease',
-      'handlePress'
     ]),
 
     reset() {
-      this.loadGame(this.levels[this.level])
+      this.loadGame(this.currentLevel)
     },
 
     nextLevel() {
-      if (this.dat.config.nextLevel) {
-        this.level = this.dat.config.nextLevel
+      if (this.currentLevel.config.nextLevel) {
         engine.stop()
+        this.level = this.currentLevel.config.nextLevel
         this.reset()
       }
     }

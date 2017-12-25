@@ -1,4 +1,4 @@
-import { clouds, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WIN_ZONE } from '@/lib/build-tools';
+import { clouds, CAMERA, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WIN_ZONE } from '@/lib/build-tools';
 import { strip } from '@/utils/string'
 
 export const level1 = {
@@ -10,6 +10,7 @@ export const level1 = {
     nextLevel: 'level2',
   },
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_WIN_ZONE, { w: 1000, h: 1000, x: 2050, y: 0 }),
     ...clouds(100, 0, 2850, 150, 300, { color: '#dfdfdf' }),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
@@ -32,6 +33,7 @@ export const level2 = {
       Rinse & repeat`
   },
   map: [
+    Object.assign({}, CAMERA),
     Object.assign({}, BASE_WIN_ZONE, { w: 1000, h: 1000, x: 3200, y: 0 }),
     ...clouds(100, 0, 4150, 150, 300, { color: '#dfdfdf' }),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),

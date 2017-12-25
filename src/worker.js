@@ -1,28 +1,29 @@
-import {isJumping, move, detectCollision, handleCollisions} from '@/lib/engine'
+import {move, detectCollision, handleCollisions, createFrame} from '@/lib/engine'
 
 let data = {}
 
-function requestFrame(frame) {
-  move(data, frame)
+function requestFrame(state) {
+  data = move(data, state)
   const collisions = detectCollision(data, data.map)
-  handleCollisions(data, collisions)
-  return data
+  data = handleCollisions(data, collisions)
+  const nextFrame = createFrame(data)
+
+  return nextFrame
 }
 
-function loadGame(data_) {
-  data = data_
-
-  return data
-}
-
-function handlePress() {
-  if (!isJumping(data)) {
-    data.state.up = true
+function loadGame({canvas, config, map}) {
+  data = {
+    canvas: {...canvas},
+    config: {...config},
+    map: [...map],
+    state: {
+      up: false,
+      isAlive: true,
+      isWinner: false
+    }
   }
-}
 
-function handleRelease() {
-  data.state.up = false
+  return data
 }
 
 onmessage = function(e) {
@@ -35,9 +36,7 @@ onmessage = function(e) {
 
   const handlers = {
     requestFrame,
-    loadGame,
-    handlePress,
-    handleRelease
+    loadGame
   }
 
   const response = handlers[event](...args)
