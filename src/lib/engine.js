@@ -196,9 +196,12 @@ export function move(data, state) {
       return obj
     }
 
-    if (!obj.properties.includes(PROP_STATIC)) {
+    // jump
+    if (obj.type === 'hero') {
       Object.assign(obj, accel(obj, data));
+    }
 
+    if (!obj.properties.includes(PROP_STATIC)) {
       obj.x0 = el.x;
       obj.y0 = el.y;
 

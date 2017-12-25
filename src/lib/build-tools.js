@@ -21,7 +21,7 @@ export const CAMERA = {
 
 export const SHAPE = {
   type: 'shape',
-  properties: [PROP_STATIC, PROP_DRAWABLE],
+  properties: [PROP_DRAWABLE],
   h: 0,
   w: 0,
   x: 0,
@@ -74,7 +74,11 @@ export function clouds(count=10, xMin=0, xMax=100, yMin=0, yMax=100, config={}) 
       x: Math.random() * (xMax - xMin) + xMin,
       y: Math.random() * (yMax - yMin) + yMin,
       w: Math.random() * 100,
-      h: 1
+      h: 1,
+      x0: 0,
+      y0: 0,
+      dx: Math.random() * -0.1,
+      dy: 0
     }));
   }
 
