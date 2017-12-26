@@ -191,9 +191,7 @@ export function move (data, state) {
   data.state = {...data.state, ...state}
 
   const hero = data.map.find((el) => el.type === 'hero')
-  if (hero.type === 'hero') {
-    Object.assign(hero, accel(hero, data))
-  }
+  Object.assign(hero, accel(hero, data))
 
   data.map = data.map.map((el) => {
     const obj = Object.assign({}, el)
