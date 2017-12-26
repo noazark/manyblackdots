@@ -174,28 +174,28 @@ const accel = throttle('accel', 500,
   }
 )
 
-function atExtents(data) {
+function furthestExtent(data) {
   const extents = data.map.map((el) => el.properties.includes(PROP_STATIC) ? el.x + el.w : 0)
   const furthestExtent = Math.max(...extents)
+  return furthestExtent
+}
+
+function atExtents(data) {
   const camera = data.map.find((el) => el.type === 'camera')
 
-  return camera.x + camera.w >= furthestExtent
+  return camera.x + camera.w >= furthestExtent(data)
 }
 
 export function move(data, state) {
   data.state = {...data.state, ...state}
 
+  const hero = data.map.find((el) => el.type === 'hero')
+  if (hero.type === 'hero') {
+    Object.assign(hero, accel(hero, data));
+  }
+
   data.map = data.map.map((el) => {
     const obj = Object.assign({}, el)
-
-    if (obj.type === 'camera' && atExtents(data)) {
-      return obj
-    }
-
-    // jump
-    if (obj.type === 'hero') {
-      Object.assign(obj, accel(obj, data));
-    }
 
     if (!obj.properties.includes(PROP_STATIC)) {
       obj.x0 = el.x;
@@ -207,6 +207,11 @@ export function move(data, state) {
 
     return obj
   });
+
+  if (atExtents(data)) {
+    const camera = data.map.find((el) => el.type === 'camera')
+    camera.x = furthestExtent(data) - camera.w
+  }
 
   return data
 }
