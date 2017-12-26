@@ -1,4 +1,4 @@
-import { clouds, CAMERA, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WIN_ZONE } from '@/lib/build-tools';
+import { clouds, CAMERA, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WIN_ZONE } from '@/lib/build-tools'
 import { strip } from '@/utils/string'
 
 export const level1 = {
@@ -7,7 +7,7 @@ export const level1 = {
     description: strip`
       press any button to begin
       press any button to jump`,
-    nextLevel: 'level2',
+    nextLevel: 'level2'
   },
   map: [
     Object.assign({}, CAMERA),
@@ -22,7 +22,7 @@ export const level1 = {
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 10, x: 450 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 10, x: 750 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 50, x: 900 }),
-    Object.assign({}, BASE_OBSTACLE, { w: 20, y: 150, h: 1500, x: 1800 }),
+    Object.assign({}, BASE_OBSTACLE, { w: 20, y: 150, h: 1500, x: 1800 })
   ]
 }
 
@@ -50,6 +50,6 @@ export const level2 = {
     Object.assign({}, BASE_PLATFORM, { w: 300, x: 2530, y: 70 }),
     Object.assign({}, BASE_PLATFORM, { w: 150, x: 2610, y: 120 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 190, h: 1000, x: 2860 }),
-    Object.assign({}, BASE_PLATFORM, { w: 200, x: 2950, y: 160 }),
+    Object.assign({}, BASE_PLATFORM, { w: 200, x: 2950, y: 160 })
   ]
 }

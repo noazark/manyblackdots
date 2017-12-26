@@ -2,7 +2,7 @@ import {move, detectCollision, handleCollisions, createFrame} from '@/lib/engine
 
 let data = {}
 
-function requestFrame(state) {
+function requestFrame (state) {
   data = move(data, state)
   const collisions = detectCollision(data, data.map)
   data = handleCollisions(data, collisions)
@@ -11,7 +11,7 @@ function requestFrame(state) {
   return nextFrame
 }
 
-function loadGame({canvas, config, map}) {
+function loadGame ({canvas, config, map}) {
   data = {
     canvas: {...canvas},
     config: {...config},
@@ -26,9 +26,9 @@ function loadGame({canvas, config, map}) {
   return data
 }
 
-onmessage = function(e) {
+// eslint-disable-next-line no-undef
+onmessage = function (e) {
   let {event, args} = e.data
-  let func
 
   if (args == null) {
     args = {}

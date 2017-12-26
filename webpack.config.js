@@ -1,6 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './index.js',
@@ -9,7 +9,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: 'index.html',
-      inject: 'body',
+      inject: 'body'
     })
   ],
 
@@ -24,4 +24,4 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'dist'),
     publicPath: '/'
   }
-};
+}

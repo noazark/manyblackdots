@@ -10,17 +10,17 @@
 </template>
 
 <script>
-import Worker from  'worker-loader!@/worker';
-import { loadLevels, draw, flush, prepareCanvas } from '@/lib/engine';
-import { Loop } from '@/lib/loop';
-import { level1 } from '@/maps/main';
-import * as mainLevels from '@/maps/main';
-import * as testLevels from '@/maps/tests';
+// eslint-disable-next-line
+import Worker from 'worker-loader!@/worker.worker.js'
+import { loadLevels, draw, flush, prepareCanvas } from '@/lib/engine'
+import { Loop } from '@/lib/loop'
+import * as mainLevels from '@/maps/main'
+import * as testLevels from '@/maps/tests'
 
 const worker = new Worker()
-const engine = new Loop();
+const engine = new Loop()
 
-function mapWorker(worker, events) {
+function mapWorker (worker, events) {
   const ret = {}
 
   events.forEach((event) => {
@@ -51,7 +51,7 @@ export default {
 
   watch: {
     level: {
-      handler() {
+      handler () {
         this.reset()
       },
       immediate: true
@@ -59,18 +59,18 @@ export default {
   },
 
   computed: {
-    currentLevel() {
+    currentLevel () {
       return this.levels[this.level]
     }
   },
 
-  destroyed() {
-    worker.terminate();
+  destroyed () {
+    worker.terminate()
   },
 
-  mounted() {
-    const canvas = this.$refs.canvas;
-    const canvasBuffer = canvas.cloneNode();
+  mounted () {
+    const canvas = this.$refs.canvas
+    const canvasBuffer = canvas.cloneNode()
 
     let ctx
     let ctxBuffer
@@ -78,11 +78,11 @@ export default {
     engine.events.addEventListener('tick', dt => this.requestFrame({...this.state, dt}))
 
     const draw_ = (response) => {
-      draw(canvasBuffer, ctxBuffer, response);
+      draw(canvasBuffer, ctxBuffer, response)
       flush(canvas, ctx, canvasBuffer)
 
       if (!response.state.isAlive) {
-        engine.stop();
+        engine.stop()
       }
     }
 
@@ -111,7 +111,7 @@ export default {
       if (this.dat && !this.dat.state.isAlive) {
         this.reset()
       } else if (!engine.running) {
-        engine.start();
+        engine.start()
       }
     }
 
@@ -120,23 +120,23 @@ export default {
     }
 
     document.addEventListener('contextmenu', (e) => e.preventDefault())
-    document.addEventListener('touchstart', handlePress);
-    document.addEventListener('keydown', handlePress);
-    document.addEventListener('touchend', handleRelease);
-    document.addEventListener('keyup', handleRelease);
+    document.addEventListener('touchstart', handlePress)
+    document.addEventListener('keydown', handlePress)
+    document.addEventListener('touchend', handleRelease)
+    document.addEventListener('keyup', handleRelease)
   },
 
   methods: {
     ...mapWorker(worker, [
       'loadGame',
-      'requestFrame',
+      'requestFrame'
     ]),
 
-    reset() {
+    reset () {
       this.loadGame(this.currentLevel)
     },
 
-    nextLevel() {
+    nextLevel () {
       if (this.currentLevel.config.nextLevel) {
         engine.stop()
         this.level = this.currentLevel.config.nextLevel
