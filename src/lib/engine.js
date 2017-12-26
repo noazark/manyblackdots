@@ -30,10 +30,6 @@ export function initializeLevel({ config, map }) {
   return level
 }
 
-function round(num) {
-  return ~~ (0.5 + num)
-}
-
 function cameraX(data) {
   const camera = data.map.find((el) => el.type === 'camera')
   return camera.x;
@@ -70,7 +66,7 @@ function _drawRect(ctx, data, r) {
     ctx.fillStyle = 'red';
   }
 
-  ctx.fillRect(round(x - cameraX(data)), round(y), round(width), round(height));
+  ctx.fillRect(x - cameraX(data), y, width, height);
 }
 
 function drawVectors(ctx, data, boxes) {
