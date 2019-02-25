@@ -33,7 +33,7 @@ function _drawRect (ctx, data, r) {
 
   ctx.fillStyle = r.color
 
-  if (data.config.showCollisions && r.inCollision) {
+  if (data.state.showCollisions && r.inCollision) {
     ctx.fillStyle = 'red'
   }
 
@@ -41,8 +41,9 @@ function _drawRect (ctx, data, r) {
 }
 
 export function drawVectors (ctx, data, boxes) {
+  const drawables = data.map.filter((el) => el.properties.includes(PROP_DRAWABLE))
   const camera = data.map.find((el) => el.type === 'camera')
-  boxes.forEach((r) => {
+  drawables.forEach((r) => {
     ctx.strokeStyle = 'red'
     ctx.beginPath()
     const cx = r.x - cameraX(data) + r.w / 2
@@ -56,16 +57,18 @@ export function drawVectors (ctx, data, boxes) {
   })
 }
 
-export function drawGhosts (ctx, data, boxes) {
+export function drawGhosts (ctx, data) {
   const camera = data.map.find((el) => el.type === 'camera')
-  boxes.forEach((r) => {
+  const drawables = data.map.filter((el) => el.properties.includes(PROP_DRAWABLE))
+  drawables.forEach((r) => {
     ctx.fillStyle = 'blue'
     ctx.fillRect(r.x0 - cameraX(data), camera.h - r.y0 - r.h, r.w, r.h)
   })
 }
 
-export function drawRects (ctx, data, boxes) {
-  boxes.forEach((r) => _drawRect(ctx, data, r))
+export function drawRects (ctx, data) {
+  const drawables = data.map.filter((el) => el.properties.includes(PROP_DRAWABLE))
+  drawables.forEach((r) => _drawRect(ctx, data, r))
 }
 
 export function drawGameOver (ctx, data) {
@@ -90,14 +93,14 @@ export function draw (canvas, data) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  if (data.config.showGhosts) {
-    drawGhosts(ctx, data, data.map)
+  if (data.state.showGhosts) {
+    drawGhosts(ctx, data)
   }
 
-  drawRects(ctx, data, data.map.filter((el) => el.properties.includes(PROP_DRAWABLE)))
+  drawRects(ctx, data)
 
-  if (data.config.showVectors) {
-    drawVectors(ctx, data, data.map.filter((el) => el.properties.includes(PROP_DRAWABLE)))
+  if (data.state.showVectors) {
+    drawVectors(ctx, data)
   }
 
   if (!data.state.isAlive) {

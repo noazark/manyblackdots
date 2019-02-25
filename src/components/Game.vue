@@ -6,6 +6,14 @@
     <canvas ref="canvas"></canvas>
     <pre v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
     <pre v-else>{{currentLevel.config.description}}</pre>
+
+    <template v-if="debug">
+      <label><input type="checkbox" v-model="state.showVectors"> show vectors</label>
+      <br>
+      <label><input type="checkbox" v-model="state.showGhosts"> show ghosts</label>
+      <br>
+      <label><input type="checkbox" v-model="state.showCollisions"> show collisions</label>
+    </template>
   </div>
 </template>
 
@@ -17,6 +25,7 @@ import { draw, prepareCanvas, flush } from '@/lib/screen'
 import { Loop } from '@/lib/loop'
 import * as mainLevels from '@/maps/main'
 import * as testLevels from '@/maps/tests'
+import url from 'url'
 
 const worker = new Worker()
 const engine = new Loop()
@@ -36,13 +45,17 @@ function mapWorker (worker, events) {
 export default {
   data () {
     return {
+      debug: false,
       levels: loadLevels({
         ...mainLevels,
         ...testLevels
       }),
       level: 'level1',
       state: {
-        up: false
+        up: false,
+        showVectors: false,
+        showGhosts: false,
+        showCollisions: false,
       },
       dat: {
         config: {}
@@ -56,6 +69,13 @@ export default {
         this.reset()
       },
       immediate: true
+    },
+
+    state: {
+      handler () {
+        this.draw(this.dat)
+      },
+      deep: true
     }
   },
 
@@ -70,12 +90,20 @@ export default {
   },
 
   mounted () {
+    const params = url.parse(window.location.search, true)
+
+    this.debug = !!params.query.debug
+
     this.canvas = this.$refs.canvas
     this.canvasBuffer = this.$refs.canvas.cloneNode()
 
-    engine.events.addEventListener('tick', dt => this.requestFrame({...this.state, dt}))
+    engine.events.addEventListener('tick', dt =>
+      this.requestFrame({...this.state, dt})
+    )
 
-    worker.onmessage = (e) => this.draw(e)
+    worker.addEventListener('message', e =>
+      this.handleFrame(e)
+    )
 
     const handlePress = (e) => {
       this.state.up = true
@@ -104,27 +132,28 @@ export default {
       'requestFrame'
     ]),
 
-    draw(e) {
+    draw(response) {
+      draw(this.canvasBuffer, response)
+      flush(this.canvasBuffer, this.canvas)
+    },
+
+    handleFrame(e) {
       const {event, response} = e.data
+      this.dat = response
 
       if (event === 'requestFrame') {
-        draw(this.canvasBuffer, response)
-        flush(this.canvasBuffer, this.canvas)
+        this.draw(response)
+      }
 
-        if (!response.state.isAlive) {
-          engine.stop()
-        }
+      if (!response.state.isAlive) {
+        engine.stop()
       }
 
       if (event === 'loadGame') {
         prepareCanvas(this.canvasBuffer, response)
         prepareCanvas(this.canvas, response)
 
-        this.requestFrame({...this.state, dt: 0})
-      }
-
-      if (response) {
-        this.dat = response
+        this.draw(response)
       }
     },
 

@@ -186,7 +186,7 @@ export function detectCollision (data, map) {
     return m
   }, collidables)
 
-  if (data.config.showCollisions) {
+  if (data.state.showCollisions) {
     map.forEach(o => {
       o.inCollision = false
     })
@@ -202,7 +202,7 @@ export function detectCollision (data, map) {
       if (collision) {
         const [intersection, side] = collision
 
-        if (data.config.showCollisions) {
+        if (data.state.showCollisions) {
           a.inCollision = true
           o.inCollision = true
         }
