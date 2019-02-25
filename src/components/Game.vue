@@ -12,7 +12,8 @@
 <script>
 // eslint-disable-next-line
 import Worker from 'worker-loader!@/worker.worker.js'
-import { loadLevels, draw, flush, prepareCanvas } from '@/lib/engine'
+import { loadLevels } from '@/lib/engine'
+import { draw, prepareCanvas, flush } from '@/lib/screen'
 import { Loop } from '@/lib/loop'
 import * as mainLevels from '@/maps/main'
 import * as testLevels from '@/maps/tests'
