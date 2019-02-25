@@ -107,10 +107,6 @@ export default {
     draw(e) {
       const {event, response} = e.data
 
-      if (response) {
-        this.dat = response
-      }
-
       if (event === 'requestFrame') {
         draw(this.canvasBuffer, response)
         flush(this.canvas, this.canvasBuffer)
@@ -125,6 +121,10 @@ export default {
         prepareCanvas(response, this.canvas)
 
         this.requestFrame({...this.state, dt: 0})
+      }
+
+      if (response) {
+        this.dat = response
       }
     },
 
