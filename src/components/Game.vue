@@ -109,7 +109,7 @@ export default {
 
       if (event === 'requestFrame') {
         draw(this.canvasBuffer, response)
-        flush(this.canvas, this.canvasBuffer)
+        flush(this.canvasBuffer, this.canvas)
 
         if (!response.state.isAlive) {
           engine.stop()
@@ -117,8 +117,8 @@ export default {
       }
 
       if (event === 'loadGame') {
-        prepareCanvas(response, this.canvasBuffer)
-        prepareCanvas(response, this.canvas)
+        prepareCanvas(this.canvasBuffer, response)
+        prepareCanvas(this.canvas, response)
 
         this.requestFrame({...this.state, dt: 0})
       }

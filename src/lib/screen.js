@@ -5,7 +5,7 @@ function cameraX (data) {
   return camera.x
 }
 
-export function prepareCanvas (data, canvas) {
+export function prepareCanvas (canvas, data) {
   const ctx = canvas.getContext('2d')
   const camera = data.map.find((el) => el.type === 'camera')
 
@@ -18,7 +18,7 @@ export function prepareCanvas (data, canvas) {
   return ctx
 }
 
-export function flush (canvas, buffer) {
+export function flush (buffer, canvas) {
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.drawImage(buffer, 0, 0, canvas.width / 2, canvas.height / 2)
