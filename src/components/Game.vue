@@ -1,8 +1,10 @@
 <template>
   <div class="game">
-    <select class="level-select" v-model="level">
-      <option :value="k" v-for="v,k in levels">{{v.config.name || k}}</option>
-    </select>
+    <div>
+      <select class="level-select" v-model="level">
+        <option :value="k" v-for="(v,k) in levels" :key="k">{{v.config.name || k}}</option>
+      </select>
+    </div>
     <canvas ref="canvas"></canvas>
     <pre v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
     <pre v-else>{{currentLevel.config.description}}</pre>
