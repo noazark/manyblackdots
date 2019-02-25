@@ -97,7 +97,7 @@ export function draw (canvas, data) {
   drawRects(ctx, data, data.map.filter((el) => el.properties.includes(PROP_DRAWABLE)))
 
   if (data.config.showVectors) {
-    drawVectors(ctx, data, data.map)
+    drawVectors(ctx, data, data.map.filter((el) => el.properties.includes(PROP_DRAWABLE)))
   }
 
   if (!data.state.isAlive) {
