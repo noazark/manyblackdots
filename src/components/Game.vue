@@ -70,41 +70,12 @@ export default {
   },
 
   mounted () {
-    const canvas = this.$refs.canvas
-    const canvasBuffer = canvas.cloneNode()
-
-    let ctx
-    let ctxBuffer
+    this.canvas = this.$refs.canvas
+    this.canvasBuffer = this.$refs.canvas.cloneNode()
 
     engine.events.addEventListener('tick', dt => this.requestFrame({...this.state, dt}))
 
-    const draw_ = (response) => {
-      draw(canvasBuffer, ctxBuffer, response)
-      flush(canvas, ctx, canvasBuffer)
-
-      if (!response.state.isAlive) {
-        engine.stop()
-      }
-    }
-
-    worker.onmessage = (e) => {
-      const {event, response} = e.data
-
-      if (response) {
-        this.dat = response
-      }
-
-      if (event === 'requestFrame') {
-        draw_(response)
-      }
-
-      if (event === 'loadGame') {
-        ctxBuffer = prepareCanvas(response, canvasBuffer)
-        ctx = prepareCanvas(response, canvas)
-
-        this.requestFrame({...this.state, dt: 0})
-      }
-    }
+    worker.onmessage = (e) => this.draw(e)
 
     const handlePress = (e) => {
       this.state.up = true
@@ -132,6 +103,30 @@ export default {
       'loadGame',
       'requestFrame'
     ]),
+
+    draw(e) {
+      const {event, response} = e.data
+
+      if (response) {
+        this.dat = response
+      }
+
+      if (event === 'requestFrame') {
+        draw(this.canvasBuffer, response)
+        flush(this.canvas, this.canvasBuffer)
+
+        if (!response.state.isAlive) {
+          engine.stop()
+        }
+      }
+
+      if (event === 'loadGame') {
+        prepareCanvas(response, this.canvasBuffer)
+        prepareCanvas(response, this.canvas)
+
+        this.requestFrame({...this.state, dt: 0})
+      }
+    },
 
     reset () {
       this.loadGame(this.currentLevel)

@@ -18,7 +18,8 @@ export function prepareCanvas (data, canvas) {
   return ctx
 }
 
-export function flush (canvas, ctx, buffer) {
+export function flush (canvas, buffer) {
+  const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.drawImage(buffer, 0, 0, canvas.width / 2, canvas.height / 2)
 }
@@ -84,7 +85,9 @@ export function drawGameWon (ctx, data) {
   ctx.fillText(data.config.nextLevel ? 'You Win!' : 'Kill Screen', camera.w / 2, camera.h / 2)
 }
 
-export function draw (canvas, ctx, data) {
+export function draw (canvas, data) {
+  const ctx = canvas.getContext('2d')
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   if (data.config.showGhosts) {
