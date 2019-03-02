@@ -118,6 +118,8 @@ export default {
     }
 
     const handleRelease = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
       this.state.up = false
     }
 
