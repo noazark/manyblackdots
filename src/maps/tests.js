@@ -83,6 +83,22 @@ export const impossiblePlatform = {
   ]
 }
 
+export const impossibleTrampoline = {
+  config: {
+    description: strip`
+    Bounce bounce bounce
+    `
+  },
+  map: [
+    Object.assign({}, CAMERA),
+    Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 300 }),
+
+    Object.assign({}, BASE_HERO, { x: 30, y: 1, dx: 0 }),
+    Object.assign({}, BASE_PLATFORM, { x: 40, y: 50, w: 50 }),
+    Object.assign({}, BASE_PLATFORM, { x: -20, y: 50, w: 50 }),
+  ]
+}
+
 let thinGapMapItems = []
 
 for (let i = 0; i < 500; i++) {
