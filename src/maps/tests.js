@@ -85,9 +85,9 @@ export const impossiblePlatform = {
 
 let thinGapMapItems = []
 
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 500; i++) {
   thinGapMapItems = thinGapMapItems.concat([
-    Object.assign({}, BASE_PLATFORM, { x: 100 * i, y: 50, w: 100 - Number(i) })
+    Object.assign({}, BASE_PLATFORM, { x: 100 * i, y: 50, w: 100 - Number(i*2) })
   ])
 }
 
@@ -100,8 +100,7 @@ export const thinGap = {
     ...thinGapMapItems,
     Object.assign({}, BASE_HERO, {
       x: 30,
-      y: 52,
-      dx: 0.1
+      y: 52
     }),
     Object.assign({}, BASE_OBSTACLE, { x: 0, y: 0, w: 99999, h: 10 })
   ]
