@@ -107,7 +107,7 @@ export default {
       this.handleFrame(e)
     )
 
-    const handlePress = (e) => {
+    const handlePress = () => {
       this.state.up = true
 
       if (this.dat && !this.dat.state.isAlive) {

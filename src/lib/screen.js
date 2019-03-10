@@ -40,7 +40,7 @@ function _drawRect (ctx, data, r) {
   ctx.fillRect(x - cameraX(data), y, width, height)
 }
 
-export function drawVectors (ctx, data, boxes) {
+export function drawVectors (ctx, data) {
   const drawables = data.map.filter((el) => el.properties.includes(PROP_DRAWABLE))
   const camera = data.map.find((el) => el.type === 'camera')
   drawables.forEach((r) => {
