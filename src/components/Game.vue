@@ -10,9 +10,7 @@
     <canvas ref="canvas"></canvas>
     <pre
       v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"
-    >
-      <a href="" @click.prevent="nextLevel">next level</a>
-    </pre>
+    ><a href="" @click.prevent="nextLevel">next level</a></pre>
     <pre v-else>{{ currentLevel.config.description }}</pre>
 
     <template v-if="debug">
