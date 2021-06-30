@@ -2,187 +2,198 @@
   <div class="game">
     <div>
       <select class="level-select" v-model="level">
-        <option :value="k" v-for="(v,k) in levels" :key="k">{{v.config.name || k}}</option>
+        <option :value="k" v-for="(v, k) in levels" :key="k">
+          {{ v.config.name || k }}
+        </option>
       </select>
     </div>
     <canvas ref="canvas"></canvas>
-    <pre v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"><a href="" @click.prevent="nextLevel">next level</a></pre>
-    <pre v-else>{{currentLevel.config.description}}</pre>
+    <pre
+      v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"
+    >
+      <a href="" @click.prevent="nextLevel">next level</a>
+    </pre>
+    <pre v-else>{{ currentLevel.config.description }}</pre>
 
     <template v-if="debug">
-      <label><input type="checkbox" v-model="state.showVectors"> show vectors</label>
-      <br>
-      <label><input type="checkbox" v-model="state.showGhosts"> show ghosts</label>
-      <br>
-      <label><input type="checkbox" v-model="state.showCollisions"> show collisions</label>
+      <label>
+        <input type="checkbox" v-model="state.showVectors" />
+        show vectors
+      </label>
+      <br />
+      <label>
+        <input type="checkbox" v-model="state.showGhosts" />
+        show ghosts
+      </label>
+      <br />
+      <label>
+        <input type="checkbox" v-model="state.showCollisions" />
+        show collisions
+      </label>
     </template>
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line
-import Worker from 'worker-loader!@/worker.worker.js'
-import { loadLevels } from '@/lib/engine'
-import { draw, prepareCanvas, flush } from '@/lib/screen'
-import { Loop } from '@/lib/loop'
-import * as mainLevels from '@/maps/main'
-import * as testLevels from '@/maps/tests'
-import url from 'url'
+import Worker from "@/game.worker.js";
+import { loadLevels } from "@/lib/engine";
+import { draw, prepareCanvas, flush } from "@/lib/screen";
+import { Loop } from "@/lib/loop";
+import * as mainLevels from "@/maps/main";
+import * as testLevels from "@/maps/tests";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  watch,
+} from "@vue/runtime-core";
 
-const worker = new Worker()
-const engine = new Loop()
+const worker = new Worker();
+const engine = new Loop();
 
-function mapWorker (worker, events) {
-  const ret = {}
+function mapWorker(worker, events) {
+  const ret = {};
 
   events.forEach((event) => {
     ret[event] = function (...args) {
-      worker.postMessage({event, args: args})
-    }
-  })
+      worker.postMessage({ event, args: args });
+    };
+  });
 
-  return ret
+  return ret;
 }
 
-export default {
-  data () {
-    return {
-      debug: false,
-      levels: loadLevels({
-        ...mainLevels,
-        ...testLevels
-      }),
-      level: 'level1',
-      state: {
-        up: false,
-        showVectors: false,
-        showGhosts: false,
-        showCollisions: false,
-      },
-      dat: {
-        config: {}
-      }
+export default defineComponent({
+  setup() {
+    const { loadGame, requestFrame } = {
+      ...mapWorker(worker, ["loadGame", "requestFrame"]),
+    };
+
+    function _draw(response) {
+      draw(canvasBuffer.value, response);
+      flush(canvasBuffer.value, canvas.value);
     }
-  },
 
-  watch: {
-    level: {
-      handler () {
-        this.reset()
-      },
-      immediate: true
-    },
-
-    state: {
-      handler () {
-        this.draw(this.dat)
-      },
-      deep: true
+    async function reset() {
+      loadGame(currentLevel.value);
     }
-  },
 
-  computed: {
-    currentLevel () {
-      return this.levels[this.level]
-    }
-  },
-
-  destroyed () {
-    worker.terminate()
-  },
-
-  mounted () {
-    const params = url.parse(window.location.search, true)
-
-    this.debug = !!params.query.debug
-
-    this.canvas = this.$refs.canvas
-    this.canvasBuffer = this.$refs.canvas.cloneNode()
-
-    engine.events.addEventListener('tick', dt =>
-      this.requestFrame({...this.state, dt})
-    )
-
-    worker.addEventListener('message', e =>
-      this.handleFrame(e)
-    )
-
-    const handlePress = () => {
-      this.state.up = true
-
-      if (this.dat && !this.dat.state.isAlive) {
-        this.reset()
-      } else if (!engine.running) {
-        engine.start()
+    function nextLevel() {
+      if (currentLevel.value.config.nextLevel) {
+        engine.stop();
+        level.value = currentLevel.value.config.nextLevel;
+        reset();
       }
     }
 
-    const handleRelease = (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      this.state.up = false
-    }
+    function handleFrame(e) {
+      const { event, response } = e.data;
+      dat.value = response;
 
-    document.addEventListener('contextmenu', (e) => e.preventDefault())
-    document.addEventListener('touchstart', handlePress)
-    document.addEventListener('keydown', handlePress)
-    document.addEventListener('touchend', handleRelease)
-    document.addEventListener('keyup', handleRelease)
-  },
-
-  methods: {
-    ...mapWorker(worker, [
-      'loadGame',
-      'requestFrame'
-    ]),
-
-    draw(response) {
-      draw(this.canvasBuffer, response)
-      flush(this.canvasBuffer, this.canvas)
-    },
-
-    handleFrame(e) {
-      const {event, response} = e.data
-      this.dat = response
-
-      if (event === 'requestFrame') {
-        this.draw(response)
+      if (event === "requestFrame") {
+        _draw(response);
       }
 
       if (!response.state.isAlive) {
-        engine.stop()
+        engine.stop();
       }
 
-      if (event === 'loadGame') {
-        prepareCanvas(this.canvasBuffer, response)
-        prepareCanvas(this.canvas, response)
+      if (event === "loadGame") {
+        prepareCanvas(canvasBuffer.value, response);
+        prepareCanvas(canvas.value, response);
 
-        this.draw(response)
-      }
-    },
-
-    reset () {
-      this.loadGame(this.currentLevel)
-    },
-
-    nextLevel () {
-      if (this.currentLevel.config.nextLevel) {
-        engine.stop()
-        this.level = this.currentLevel.config.nextLevel
-        this.reset()
+        _draw(response);
       }
     }
-  }
-}
+
+    const params = new URLSearchParams(window.location.search, true);
+
+    const debug = params.has("debug");
+    const state = reactive({
+      up: false,
+      showVectors: false,
+      showGhosts: false,
+      showCollisions: false,
+    });
+    const levels = loadLevels({
+      ...mainLevels,
+      ...testLevels,
+    });
+    const level = ref("level1");
+    let dat = ref({ config: {} });
+
+    const canvas = ref();
+    const canvasBuffer = ref();
+
+    const currentLevel = computed(() => {
+      return levels[level.value];
+    });
+
+    onMounted(() => {
+      canvasBuffer.value = canvas.value.cloneNode();
+
+      engine.events.addEventListener("tick", (dt) =>
+        requestFrame({ ...state, dt })
+      );
+
+      worker.addEventListener("message", (e) => handleFrame(e));
+
+      const handlePress = () => {
+        state.up = true;
+
+        if (dat.value.state && !dat.value.state.isAlive) {
+          reset();
+        } else if (!engine.running) {
+          engine.start();
+        }
+      };
+
+      const handleRelease = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        state.up = false;
+      };
+
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("touchstart", handlePress);
+      document.addEventListener("keydown", handlePress);
+      document.addEventListener("touchend", handleRelease);
+      document.addEventListener("keyup", handleRelease);
+    });
+
+    onUnmounted(() => {
+      worker.terminate();
+    });
+
+    watch("level", () => reset(), { immediate: true });
+    watch("state", () => _draw(dat.value));
+
+    return {
+      debug,
+      levels,
+      level,
+      currentLevel,
+      state,
+      dat,
+      canvas,
+      nextLevel,
+    };
+  },
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 *:focus {
-    outline: none;
+  outline: none;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 
@@ -206,6 +217,6 @@ a {
   border: none;
   font-size: 1rem;
   font-family: monospace;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 </style>

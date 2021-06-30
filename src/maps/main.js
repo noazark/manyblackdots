@@ -1,18 +1,25 @@
-import { clouds, CAMERA, BASE_HERO, BASE_OBSTACLE, BASE_PLATFORM, BASE_WIN_ZONE } from '@/lib/build-tools'
-import { strip } from '@/utils/string'
+import {
+  clouds,
+  CAMERA,
+  BASE_HERO,
+  BASE_OBSTACLE,
+  BASE_PLATFORM,
+  BASE_WIN_ZONE,
+} from "@/lib/build-tools";
+import { strip } from "@/utils/string";
 
 export const level1 = {
   config: {
-    name: 'Level 1',
+    name: "Level 1",
     description: strip`
       press any button to begin
       press any button to jump`,
-    nextLevel: 'level2'
+    nextLevel: "level2",
   },
   map: [
     Object.assign({}, CAMERA),
     Object.assign({}, BASE_WIN_ZONE, { w: 300, h: 300, x: 2050, y: 0 }),
-    ...clouds(100, 0, 2350, 150, 300, { color: '#dfdfdf' }),
+    ...clouds(100, 0, 2350, 150, 300, { color: "#dfdfdf" }),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_OBSTACLE, { w: 2350, y: -100 }),
     Object.assign({}, BASE_PLATFORM, { x: 0, y: 0, w: 1200 }),
@@ -22,20 +29,20 @@ export const level1 = {
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 10, x: 450 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 10, x: 750 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 0, h: 50, x: 900 }),
-    Object.assign({}, BASE_OBSTACLE, { w: 20, y: 150, h: 1500, x: 1800 })
-  ]
-}
+    Object.assign({}, BASE_OBSTACLE, { w: 20, y: 150, h: 1500, x: 1800 }),
+  ],
+};
 
 export const level2 = {
   config: {
-    name: 'Level 2',
+    name: "Level 2",
     description: strip`
-      Rinse & repeat`
+      Rinse & repeat`,
   },
   map: [
     Object.assign({}, CAMERA),
     Object.assign({}, BASE_WIN_ZONE, { w: 300, h: 300, x: 3200, y: 0 }),
-    ...clouds(100, 0, 3500, 150, 300, { color: '#dfdfdf' }),
+    ...clouds(100, 0, 3500, 150, 300, { color: "#dfdfdf" }),
     Object.assign({}, BASE_HERO, { x: 30, y: 1 }),
     Object.assign({}, BASE_OBSTACLE, { w: 3500, y: -100 }),
     Object.assign({}, BASE_PLATFORM, { y: 0, w: 300 }),
@@ -50,6 +57,6 @@ export const level2 = {
     Object.assign({}, BASE_PLATFORM, { w: 300, x: 2530, y: 70 }),
     Object.assign({}, BASE_PLATFORM, { w: 150, x: 2610, y: 120 }),
     Object.assign({}, BASE_OBSTACLE, { w: 20, y: 190, h: 1000, x: 2860 }),
-    Object.assign({}, BASE_PLATFORM, { w: 200, x: 2950, y: 160 })
-  ]
-}
+    Object.assign({}, BASE_PLATFORM, { w: 200, x: 2950, y: 160 }),
+  ],
+};

@@ -1,13 +1,20 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <game></game>
   </div>
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+import Game from "./components/Game.vue";
+
+export default defineComponent({
+  components: {
+    Game
+  },
+
   name: 'app'
-}
+})
 </script>
 
 <style>

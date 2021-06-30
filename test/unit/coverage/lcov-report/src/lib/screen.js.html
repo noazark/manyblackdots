@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/lib/screen.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">src/lib/</a> screen.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/73</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/23</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/62</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { PROP_DRAWABLE } from './engine'
+&nbsp;
+function cameraX (data) <span class="fstat-no" title="function not covered" >{</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+<span class="cstat-no" title="statement not covered" >  return camera.x</span>
+}
+&nbsp;
+export function prepareCanvas (canvas, data) <span class="fstat-no" title="function not covered" >{</span>
+  const ctx = <span class="cstat-no" title="statement not covered" >canvas.getContext('2d')</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  canvas.width = camera.w * 2</span>
+<span class="cstat-no" title="statement not covered" >  canvas.height = camera.h * 2</span>
+<span class="cstat-no" title="statement not covered" >  canvas.style.width = `${camera.w}px`</span>
+<span class="cstat-no" title="statement not covered" >  canvas.style.height = `${camera.h}px`</span>
+<span class="cstat-no" title="statement not covered" >  ctx.scale(2, 2)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return ctx</span>
+}
+&nbsp;
+export function flush (buffer, canvas) <span class="fstat-no" title="function not covered" >{</span>
+  const ctx = <span class="cstat-no" title="statement not covered" >canvas.getContext('2d')</span>
+<span class="cstat-no" title="statement not covered" >  ctx.clearRect(0, 0, canvas.width, canvas.height)</span>
+<span class="cstat-no" title="statement not covered" >  ctx.drawImage(buffer, 0, 0, canvas.width / 2, canvas.height / 2)</span>
+}
+&nbsp;
+function _drawRect (ctx, data, r) <span class="fstat-no" title="function not covered" >{</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+  const x = <span class="cstat-no" title="statement not covered" >r.x</span>
+  const y = <span class="cstat-no" title="statement not covered" >camera.h - r.y - r.h</span>
+  const width = <span class="cstat-no" title="statement not covered" >r.w</span>
+  const height = <span class="cstat-no" title="statement not covered" >r.h</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  ctx.fillStyle = r.color</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (data.state.showCollisions &amp;&amp; r.inCollision) {</span>
+<span class="cstat-no" title="statement not covered" >    ctx.fillStyle = 'red'</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  ctx.fillRect(x - cameraX(data), y, width, height)</span>
+}
+&nbsp;
+export function drawVectors (ctx, data) <span class="fstat-no" title="function not covered" >{</span>
+  const drawables = <span class="cstat-no" title="statement not covered" >data.map.filter((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.properties.includes(PROP_DRAWABLE))</span></span></span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+<span class="cstat-no" title="statement not covered" >  drawables.forEach((r) =&gt; <span class="fstat-no" title="function not covered" >{</span></span>
+<span class="cstat-no" title="statement not covered" >    ctx.strokeStyle = 'red'</span>
+<span class="cstat-no" title="statement not covered" >    ctx.beginPath()</span>
+    const cx = <span class="cstat-no" title="statement not covered" >r.x - cameraX(data) + r.w / 2</span>
+    const cy = <span class="cstat-no" title="statement not covered" >camera.h - r.y - r.h + r.h / 2</span>
+&nbsp;
+    const vx = <span class="cstat-no" title="statement not covered" >r.dx * 50</span>
+    const vy = <span class="cstat-no" title="statement not covered" >r.dy * 50</span>
+<span class="cstat-no" title="statement not covered" >    ctx.moveTo(cx, cy)</span>
+<span class="cstat-no" title="statement not covered" >    ctx.lineTo(cx + vx, cy - vy)</span>
+<span class="cstat-no" title="statement not covered" >    ctx.stroke()</span>
+  })
+}
+&nbsp;
+export function drawGhosts (ctx, data) <span class="fstat-no" title="function not covered" >{</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+  const drawables = <span class="cstat-no" title="statement not covered" >data.map.filter((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.properties.includes(PROP_DRAWABLE))</span></span></span>
+<span class="cstat-no" title="statement not covered" >  drawables.forEach((r) =&gt; <span class="fstat-no" title="function not covered" >{</span></span>
+<span class="cstat-no" title="statement not covered" >    ctx.fillStyle = 'blue'</span>
+<span class="cstat-no" title="statement not covered" >    ctx.fillRect(r.x0 - cameraX(data), camera.h - r.y0 - r.h, r.w, r.h)</span>
+  })
+}
+&nbsp;
+export function drawRects (ctx, data) <span class="fstat-no" title="function not covered" >{</span>
+  const drawables = <span class="cstat-no" title="statement not covered" >data.map.filter((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.properties.includes(PROP_DRAWABLE))</span></span></span>
+<span class="cstat-no" title="statement not covered" >  drawables.forEach((r) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >_drawRect(ctx, data, r))</span></span></span>
+}
+&nbsp;
+export function drawGameOver (ctx, data) <span class="fstat-no" title="function not covered" >{</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  ctx.fillStyle = '#333333'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.textAlign = 'center'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.font = '24px monospace'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.fillText('Game Over', camera.w / 2, camera.h / 2)</span>
+}
+&nbsp;
+export function drawGameWon (ctx, data) <span class="fstat-no" title="function not covered" >{</span>
+  const camera = <span class="cstat-no" title="statement not covered" >data.map.find((el) =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >el.type === 'camera')</span></span></span>
+<span class="cstat-no" title="statement not covered" >  ctx.fillStyle = '#efefef'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.textAlign = 'center'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.font = '24px monospace'</span>
+<span class="cstat-no" title="statement not covered" >  ctx.fillText(data.config.nextLevel ? 'You Win!' : 'Kill Screen', camera.w / 2, camera.h / 2)</span>
+}
+&nbsp;
+export function draw (canvas, data) <span class="fstat-no" title="function not covered" >{</span>
+  const ctx = <span class="cstat-no" title="statement not covered" >canvas.getContext('2d')</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  ctx.clearRect(0, 0, canvas.width, canvas.height)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (data.state.showGhosts) {</span>
+<span class="cstat-no" title="statement not covered" >    drawGhosts(ctx, data)</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  drawRects(ctx, data)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (data.state.showVectors) {</span>
+<span class="cstat-no" title="statement not covered" >    drawVectors(ctx, data)</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (!data.state.isAlive) {</span>
+<span class="cstat-no" title="statement not covered" >    drawGameOver(ctx, data)</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (data.state.isWinner) {</span>
+<span class="cstat-no" title="statement not covered" >    drawGameWon(ctx, data)</span>
+  }
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jun 30 2021 07:27:48 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
