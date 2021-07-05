@@ -31,8 +31,7 @@ function loadGame({ canvas, config, map }) {
   return data;
 }
 
-// eslint-disable-next-line no-undef
-onmessage = function (e) {
+addEventListener("message", (e) => {
   let { event, args } = e.data;
 
   if (args == null) {
@@ -46,4 +45,4 @@ onmessage = function (e) {
 
   const response = handlers[event](...args);
   postMessage({ event, response });
-};
+});

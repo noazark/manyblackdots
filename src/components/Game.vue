@@ -34,7 +34,6 @@
 
 <script>
 // eslint-disable-next-line
-import Worker from "@/game.worker.js";
 import { loadLevels } from "@/lib/engine";
 import { draw, prepareCanvas, flush } from "@/lib/screen";
 import { Loop } from "@/lib/loop";
@@ -50,7 +49,7 @@ import {
   watch,
 } from "@vue/runtime-core";
 
-const worker = new Worker();
+const worker = new Worker("../game.worker.js", { type: "module" });
 const engine = new Loop();
 
 function mapWorker(worker, events) {
@@ -122,7 +121,7 @@ export default defineComponent({
       ...testLevels,
     });
     const level = ref("level1");
-    let dat = ref({ config: {} });
+    let dat = ref({ config: {}, state: {}, map: [] });
 
     const canvas = ref();
     const canvasBuffer = ref();
@@ -167,8 +166,14 @@ export default defineComponent({
       worker.terminate();
     });
 
-    watch("level", () => reset(), { immediate: true });
-    watch("state", () => _draw(dat.value));
+    watch(level, () => reset(), { immediate: true });
+    watch(state, () => {
+      try {
+        _draw(dat.value);
+      } catch {
+        // ignore
+      }
+    });
 
     return {
       debug,
