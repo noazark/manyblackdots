@@ -47,9 +47,11 @@ import {
   reactive,
   ref,
   watch,
-} from "@vue/runtime-core";
+} from "vue";
 
-const worker = new Worker("../game.worker.js", { type: "module" });
+const worker = new Worker(new URL("../game.worker.js", import.meta.url), {
+  type: "module",
+});
 const engine = new Loop();
 
 function mapWorker(worker, events) {
@@ -134,7 +136,7 @@ export default defineComponent({
       canvasBuffer.value = canvas.value.cloneNode();
 
       engine.events.addEventListener("tick", (dt) =>
-        requestFrame({ ...state, dt })
+        requestFrame({ ...state, dt }),
       );
 
       worker.addEventListener("message", (e) => handleFrame(e));

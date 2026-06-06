@@ -72,7 +72,7 @@ export function clouds(
   xMax = 100,
   yMin = 0,
   yMax = 100,
-  config = {}
+  config = {},
 ) {
   const clouds = [];
 
@@ -87,7 +87,7 @@ export function clouds(
         y0: 0,
         dx: Math.random() * -0.1,
         dy: 0,
-      })
+      }),
     );
   }
 

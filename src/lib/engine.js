@@ -91,7 +91,7 @@ const accel = throttle("accel", 500, function (obj, data, burn) {
 
 function furthestExtent(data) {
   const extents = data.map.map((el) =>
-    el.properties.includes(PROP_STATIC) ? el.x + el.w : 0
+    el.properties.includes(PROP_STATIC) ? el.x + el.w : 0,
   );
   const furthestExtent = Math.max(...extents);
   return furthestExtent;
@@ -160,25 +160,25 @@ function _detectCollision(a, b) {
               aV[aSide[0]],
               a0V[aSide[0]],
               bV[bSide[0]],
-              bV[bSide[1]]
+              bV[bSide[1]],
             ) ||
             intersects(
               aV[aSide[0]],
               aV[aSide[1]],
               bV[bSide[0]],
-              bV[bSide[1]]
+              bV[bSide[1]],
             ) ||
             intersects(
               a0V[aSide[0]],
               a0V[aSide[1]],
               bV[bSide[0]],
-              bV[bSide[1]]
+              bV[bSide[1]],
             ) ||
             intersects(
               a0V[aSide[0]],
               a0V[aSide[1]],
               bV[bSide[0]],
-              bV[bSide[1]]
+              bV[bSide[1]],
             );
 
           if (intersection) {

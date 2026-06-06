@@ -42,7 +42,7 @@ function _drawRect(ctx, data, r) {
 
 export function drawVectors(ctx, data) {
   const drawables = data.map.filter((el) =>
-    el.properties.includes(PROP_DRAWABLE)
+    el.properties.includes(PROP_DRAWABLE),
   );
   const camera = data.map.find((el) => el.type === "camera");
   drawables.forEach((r) => {
@@ -62,7 +62,7 @@ export function drawVectors(ctx, data) {
 export function drawGhosts(ctx, data) {
   const camera = data.map.find((el) => el.type === "camera");
   const drawables = data.map.filter((el) =>
-    el.properties.includes(PROP_DRAWABLE)
+    el.properties.includes(PROP_DRAWABLE),
   );
   drawables.forEach((r) => {
     ctx.fillStyle = "blue";
@@ -72,7 +72,7 @@ export function drawGhosts(ctx, data) {
 
 export function drawRects(ctx, data) {
   const drawables = data.map.filter((el) =>
-    el.properties.includes(PROP_DRAWABLE)
+    el.properties.includes(PROP_DRAWABLE),
   );
   drawables.forEach((r) => _drawRect(ctx, data, r));
 }
@@ -94,7 +94,7 @@ export function drawGameWon(ctx, data) {
   ctx.fillText(
     data.config.nextLevel ? "You Win!" : "Kill Screen",
     camera.w / 2,
-    camera.h / 2
+    camera.h / 2,
   );
 }
 
