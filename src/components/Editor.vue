@@ -48,14 +48,14 @@
       <div class="toolbar-group">
         <div class="share-group">
           <button @click="showShareMenu = !showShareMenu" class="share-toggle">
-            <ChevronDown :size="12" />
+            &#9662;
           </button>
           <button @click="copyPlayLink" class="share-btn" title="Copy playable link">
-            <Link :size="13" /> {{ playLinkCopied ? "Copied!" : (shareMode === 'level' ? "Share Level" : "Share All") }}
+            {{ playLinkCopied ? "Copied!" : (shareMode === 'level' ? "Share Level" : "Share All") }}
           </button>
           <div class="share-menu" v-if="showShareMenu">
-            <button @click="selectShareMode('level')"><Share2 :size="12" /> Share Level</button>
-            <button @click="selectShareMode('all')"><Share2 :size="12" /> Share All</button>
+            <button @click="selectShareMode('level')">Share Level</button>
+            <button @click="selectShareMode('all')">Share All</button>
           </div>
         </div>
         <button @click="showExport = !showExport" title="Export JSON (E)">
@@ -342,7 +342,7 @@
 
 <script>
 import { defineComponent, ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { ChevronDown, Play, Share2, Link } from "lucide-vue-next";
+import { Play } from "lucide-vue-next";
 import { loadLevels } from "@/lib/engine";
 import { Loop } from "@/lib/loop";
 import {
@@ -461,7 +461,7 @@ function simulateJumpArc(startX, startY, heroW, heroH, heroDx, burnMs) {
 
 export default defineComponent({
   name: "Editor",
-  components: { ChevronDown, Play, Share2, Link },
+  components: { Play },
 
   setup() {
     const canvas = ref(null);

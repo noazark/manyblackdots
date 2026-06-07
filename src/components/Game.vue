@@ -1,13 +1,15 @@
 <template>
   <div class="game">
-    <div>
+    <div v-if="currentLevel">
       <span class="level-select">{{ currentLevel.config.name }}</span>
     </div>
     <canvas ref="canvas"></canvas>
-    <pre
-      v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel && levels[currentLevel.config.nextLevel]"
-    ><a href="" @click.prevent="nextLevel">next level</a></pre>
-    <pre v-else>{{ currentLevel.config.description }}</pre>
+    <template v-if="currentLevel">
+      <pre
+        v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel && levels[currentLevel.config.nextLevel]"
+      ><a href="" @click.prevent="nextLevel">next level</a></pre>
+      <pre v-else>{{ currentLevel.config.description }}</pre>
+    </template>
 
     <template v-if="debug">
       <label>
