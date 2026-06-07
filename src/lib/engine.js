@@ -128,6 +128,12 @@ export function move(data, state) {
     camera.x = furthestExtent(data) - camera.w;
   }
 
+  // Auto-kill boundary at y=-100 (skip if already won)
+  const movedHero = data.map.find((el) => el.type === "hero");
+  if (movedHero && movedHero.y < -100 && !data.state.isWinner) {
+    data.state.isAlive = false;
+  }
+
   return data;
 }
 

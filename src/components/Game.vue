@@ -1,15 +1,11 @@
 <template>
   <div class="game">
     <div>
-      <select class="level-select" v-model="level">
-        <option :value="k" v-for="(v, k) in levels" :key="k">
-          {{ v.config.name || k }}
-        </option>
-      </select>
+      <span class="level-select">{{ currentLevel.config.name }}</span>
     </div>
     <canvas ref="canvas"></canvas>
     <pre
-      v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel"
+      v-if="dat.state && dat.state.isWinner && currentLevel.config.nextLevel && levels[currentLevel.config.nextLevel]"
     ><a href="" @click.prevent="nextLevel">next level</a></pre>
     <pre v-else>{{ currentLevel.config.description }}</pre>
 
@@ -34,7 +30,7 @@
 
 <script>
 // eslint-disable-next-line
-import { loadLevels } from "@/lib/engine";
+import { loadLevels, initializeLevel } from "@/lib/engine";
 import { draw, prepareCanvas, flush } from "@/lib/screen";
 import { Loop } from "@/lib/loop";
 import * as mainLevels from "@/maps/main";
@@ -82,9 +78,10 @@ export default defineComponent({
     }
 
     function nextLevel() {
-      if (currentLevel.value.config.nextLevel) {
+      const next = currentLevel.value.config.nextLevel;
+      if (next && levels[next]) {
         engine.stop();
-        level.value = currentLevel.value.config.nextLevel;
+        level.value = next;
         reset();
       }
     }
@@ -122,7 +119,29 @@ export default defineComponent({
       ...mainLevels,
       ...testLevels,
     });
-    const level = ref("level1");
+
+    // Load custom levels from URL hash: #play=<base64 JSON>
+    let startLevel = "level1";
+    const hash = window.location.hash.slice(1);
+    if (hash.startsWith("play=")) {
+      try {
+        const raw = decodeURIComponent(hash.slice(5));
+        const json = decodeURIComponent(escape(atob(raw)));
+        const customLevels = JSON.parse(json);
+        let firstKey = null;
+        for (const cl of customLevels) {
+          const key = cl.config.key || cl.config.name || "custom";
+          levels[key] = initializeLevel(cl);
+          if (!firstKey) firstKey = key;
+        }
+        if (firstKey) startLevel = firstKey;
+      } catch (e) {
+        console.error("Failed to load custom levels:", e);
+      }
+    }
+
+    const isCustom = hash.startsWith("play=");
+    const level = ref(startLevel);
     let dat = ref({ config: {}, state: {}, map: [] });
 
     const canvas = ref();
@@ -179,6 +198,7 @@ export default defineComponent({
 
     return {
       debug,
+      isCustom,
       levels,
       level,
       currentLevel,
