@@ -1639,10 +1639,10 @@ export default defineComponent({
       });
       ctx.restore();
 
-      // Viewport border
-      ctx.strokeStyle = "#42b983";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(vpLeft, vpTop, vpW, vpH);
+      // Viewport border (offset 1px outside so platforms at y=0 are visible)
+      ctx.strokeStyle = "rgba(66, 185, 131, 0.5)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(vpLeft - 2, vpTop - 2, vpW + 4, vpH + 4);
 
       // Return to editor on death or win
       if (!data.state.isAlive || data.state.isWinner) {
