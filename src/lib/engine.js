@@ -173,12 +173,6 @@ function _detectCollision(a, b) {
               a0V[aSide[1]],
               bV[bSide[0]],
               bV[bSide[1]],
-            ) ||
-            intersects(
-              a0V[aSide[0]],
-              a0V[aSide[1]],
-              bV[bSide[0]],
-              bV[bSide[1]],
             );
 
           if (intersection) {
@@ -263,6 +257,39 @@ function filterCollisions(collision) {
   return collisionDistance > 0.1;
 }
 
+// A killer/win-zone collision is "shielded" if a non-killer collidable on
+// the same axis has a larger displacement — meaning it was hit first during
+// the hero's trajectory and would block the hero from reaching the killer.
+function isShielded(killerCol, allCollisions) {
+  const [, , killerInt, killerSide] = killerCol;
+
+  const isVertical = killerSide === "bc" || killerSide === "da";
+  const isHorizontal = killerSide === "ab" || killerSide === "cd";
+
+  for (const col of allCollisions) {
+    const [, obj, intersection, side] = col;
+    if (obj.properties.includes(PROP_KILLER)) continue;
+    if (obj.properties.includes(PROP_WIN_ZONE)) continue;
+    if (!obj.properties.includes(PROP_COLLIDABLE)) continue;
+
+    if (
+      isVertical &&
+      (side === "bc" || side === "da") &&
+      Math.abs(intersection.dy) > Math.abs(killerInt.dy)
+    ) {
+      return true;
+    }
+    if (
+      isHorizontal &&
+      (side === "ab" || side === "cd") &&
+      Math.abs(intersection.dx) > Math.abs(killerInt.dx)
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function handleCollisions(data, collisions) {
   if ((collisions && collisions.length === 0) || data.state.isWinner === true) {
     return data;
@@ -270,6 +297,7 @@ export function handleCollisions(data, collisions) {
 
   const closestCollision = collisions.sort(sortCollisions)[0];
   const nearCollisions = collisions.filter(filterCollisions, {});
+  const allCollisions = [closestCollision, ...nearCollisions];
 
   // Allow hero to move once per axis, this is to handle pinch points between
   // two static objects and a collider. This is necessary to prevent the
@@ -278,8 +306,18 @@ export function handleCollisions(data, collisions) {
   let hasMovedX = false;
   let hasMovedY = false;
 
-  [closestCollision, ...nearCollisions].forEach((col) => {
+  allCollisions.forEach((col) => {
     const [hero, collision, intersection, side] = col;
+
+    // If this collision is shielded by a closer solid object on the same
+    // axis, the hero never reaches it — skip entirely.
+    if (
+      (collision.properties.includes(PROP_KILLER) ||
+        collision.properties.includes(PROP_WIN_ZONE)) &&
+      isShielded(col, allCollisions)
+    ) {
+      return;
+    }
 
     if (collision.type === "platform" && hero.dy < 0) {
       hero.y += intersection.dy;
